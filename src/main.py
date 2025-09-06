@@ -35,8 +35,13 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(content_bp, url_prefix='/api/content')
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 
-# uncomment if you need to use database
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
+# Database configuration (supports external volume via DB_PATH)
+# If DB_PATH is set (e.g., /data/app.db on Railway), use it; otherwise fallback to local file under src/database/app.db
+_db_default = os.path.join(os.path.dirname(__file__), 'database', 'app.db')
+db_path = os.getenv('DB_PATH', _db_default)
+# Ensure parent dir exists to avoid sqlite failing to create file path
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
