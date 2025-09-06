@@ -1,0 +1,22 @@
+# Local environment files
+.env
+.env.local
+
+# Secrets/keys
+gdrive-key.json
+
+# Virtual environments
+.venv/
+venv/
+
+# Compiled files
+__pycache__/
+*.pyc
+
+# SQLite database
+# NOTE: intentionally tracked in repo for Railway deploy
+# src/database/app.db
+
+# Uploaded receipts (locally stored)
+# NOTE: intentionally tracked in repo
+# src/static/receipts/*

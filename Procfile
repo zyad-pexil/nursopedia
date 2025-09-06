@@ -1,0 +1,1 @@
+web: gunicorn -w 2 -k gthread -t 0 -b 0.0.0.0:$PORT src.main:app
