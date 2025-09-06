@@ -315,11 +315,13 @@ def upload_receipt():
         
         if not drive_file_url:
             filename = secure_filename(f"{user_id}_{uuid.uuid4().hex}_{file.filename}")
-            upload_folder = os.path.join(current_app.root_path, 'static', 'receipts')
+            # Save receipts alongside the database for single-volume setup
+            upload_folder = os.path.join(current_app.root_path, 'database', 'receipts')
             os.makedirs(upload_folder, exist_ok=True)
             file_path = os.path.join(upload_folder, filename)
             file.save(file_path)
-            drive_file_url = f"/static/receipts/{filename}"
+            # Public URL is now served via /uploads/receipts/<filename>
+            drive_file_url = f"/uploads/receipts/{filename}"
         
         # تحديث طلب الاشتراك
         subscription_request = SubscriptionRequest.query.filter_by(

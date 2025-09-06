@@ -44,6 +44,13 @@ migrate = Migrate(app, db)
 with app.app_context():
     db.create_all()
 
+# Serve uploaded receipts stored under src/database/receipts
+@app.route('/uploads/receipts/<path:filename>')
+def serve_receipts(filename):
+    uploads_dir = os.path.join(os.path.dirname(__file__), 'database', 'receipts')
+    os.makedirs(uploads_dir, exist_ok=True)
+    return send_from_directory(uploads_dir, filename)
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
