@@ -1,0 +1,106 @@
+/* Dark mode base helpers */
+:root {
+  color-scheme: light dark;
+}
+html.dark body {
+  background-color: #0b1220;
+  color: #e5e7eb;
+}
+html.dark .card,
+html.dark .nursopedia-card {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+html.dark .border { border-color: #1f2937; }
+html.dark .text-gray-600 { color: #9ca3af; }
+html.dark .bg-white { background-color: #0f172a; }
+html.dark .bg-gray-50 { background-color: #0b1220; }
+html.dark .shadow { box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+
+/* ====== Layout utilities ====== */
+.nurso-container {
+  max-width: 80rem; /* ~1280px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.nurso-section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+@media (min-width: 768px) {
+  .nurso-section { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+}
+@media (min-width: 1024px) {
+  .nurso-section { padding-top: 3rem; padding-bottom: 3rem; }
+}
+
+/* ====== Subtle animations (respects reduced motion) ====== */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes nurso-fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes nurso-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes nurso-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .animate-fade-up { 
+    opacity: 0;
+    animation: nurso-fade-up .6s ease-out forwards; 
+  }
+  .animate-fade-in {
+    opacity: 0;
+    animation: nurso-fade-in .6s ease-out forwards;
+  }
+  .animate-float {
+    animation: nurso-float 6s ease-in-out infinite;
+    will-change: transform;
+  }
+  /* Hover lift for cards */
+  .nurso-hover-lift {
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .nurso-hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  }
+  /* Button subtle glow */
+  .nurso-btn-glow {
+    position: relative;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .nurso-btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(59,130,246,.25);
+  }
+  /* Staggered appearance for grids */
+  .nurso-stagger > * { opacity: 0; animation: nurso-fade-up .6s ease-out forwards; }
+  .nurso-stagger > *:nth-child(1) { animation-delay: .05s; }
+  .nurso-stagger > *:nth-child(2) { animation-delay: .15s; }
+  .nurso-stagger > *:nth-child(3) { animation-delay: .25s; }
+  .nurso-stagger > *:nth-child(4) { animation-delay: .35s; }
+  .nurso-stagger > *:nth-child(5) { animation-delay: .45s; }
+  .nurso-stagger > *:nth-child(6) { animation-delay: .55s; }
+}
+
+/* ====== Highlighted success banner ====== */
+.nurso-success-banner {
+  background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(16,185,129,0.12));
+  border: 1px solid rgba(16,185,129,0.35);
+  color: #065f46; /* emerald-800 */
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,.4);
+}
+html.dark .nurso-success-banner {
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(16,185,129,0.08));
+  border-color: rgba(52,211,153,0.35);
+  color: #d1fae5; /* emerald-100 */
+  box-shadow: 0 10px 24px rgba(52,211,153,0.12), inset 0 1px 0 rgba(255,255,255,.06);
+}
