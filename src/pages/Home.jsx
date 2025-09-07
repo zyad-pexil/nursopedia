@@ -19,7 +19,7 @@ export default function Home(){
         <section className="nurso-container pt-16 pb-10 lg:pt-24 lg:pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 text-center lg:text-right">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/30 supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:backdrop-blur border border-white/20 mb-4">
                 <Sparkles className="w-4 h-4 text-yellow-300" />
                 <span className="text-xs md:text-sm">تعليم تمريض تفاعلي ومخصص لنجاحك</span>
               </div>
@@ -36,7 +36,7 @@ export default function Home(){
                   ابدأ الآن
                   <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
                 </Link>
-                <Link to="/register" className="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-white/40 bg-white/20 backdrop-blur hover:bg-white/30 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 transition">
+                <Link to="/register" className="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-white/40 bg-white/40 hover:bg-white/50 supports-[backdrop-filter]:bg-white/20 supports-[backdrop-filter]:hover:bg-white/30 supports-[backdrop-filter]:backdrop-blur text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 transition">
                   إنشاء حساب
                 </Link>
               </div>
@@ -145,7 +145,7 @@ function HeroCard(){
   return (
     <div className="relative w-full max-w-sm">
       <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-primary/40 via-white/20 to-transparent blur-xl" />
-      <div className="relative rounded-2xl p-6 bg-white/15 backdrop-blur border border-white/25 shadow-2xl">
+      <div className="relative rounded-2xl p-6 bg-white/40 supports-[backdrop-filter]:bg-white/15 supports-[backdrop-filter]:backdrop-blur border border-white/25 shadow-2xl">
         <div className="flex justify-center mb-6">
           <img src={logo} alt="شعار Team Nursopedia" className="w-28 h-28 rounded-full object-cover shadow" />
         </div>
@@ -159,7 +159,7 @@ function HeroCard(){
 
 function Feature({ icon, title, children }){
   return (
-    <div className="p-5 rounded-xl bg-[--card-bg] backdrop-blur border border-[--card-border] shadow hover:translate-y-[-2px] hover:shadow-lg transition-transform">
+    <div className="p-5 rounded-xl bg-[--card-bg] border border-[--card-border] shadow hover:translate-y-[-2px] hover:shadow-lg transition-transform supports-[backdrop-filter]:backdrop-blur">
       <div className="flex items-center gap-2 mb-2 text-white">
         {icon}
         <h3 className="font-semibold">{title}</h3>

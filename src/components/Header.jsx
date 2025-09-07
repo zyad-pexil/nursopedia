@@ -42,8 +42,9 @@ export default function Header(){
       root.classList.remove('dark')
       setIsDark(false)
     } else {
-      // Fallback to system preference when no saved theme
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      // Fallback: use system preference if available; default to dark for broader consistency
+      const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      const prefersDark = hasMatchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : true
       root.classList.toggle('dark', prefersDark)
       setIsDark(prefersDark)
     }
