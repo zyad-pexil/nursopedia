@@ -27,6 +27,9 @@ export default function AdminManage(){
   // Requests
   const [requests, setRequests] = useState([])
   const [reqFilter, setReqFilter] = useState({ status: 'pending', search: '' })
+  // Additional Subject Requests
+  const [addRequests, setAddRequests] = useState([])
+  const [addReqFilter, setAddReqFilter] = useState({ status: 'pending' })
 
   // Subjects/Lessons/Exams tree
   const [subjects, setSubjects] = useState([])
@@ -45,12 +48,18 @@ export default function AdminManage(){
   const [answerForm, setAnswerForm] = useState({ question_id: '', answer_text: '', is_correct: false, order: 1, is_active: true })
   const [attachDrafts, setAttachDrafts] = useState({}) // { [lessonId]: { name:'', url:'' } }
 
-  useEffect(() => { loadRequests(); loadSubjects(); }, [])
+  useEffect(() => { loadRequests(); loadAddRequests(); loadSubjects(); }, [])
 
   async function loadRequests(filter = reqFilter){
     try {
       const res = await Api.getSubscriptionRequests(filter)
       if (res.success) setRequests(res.requests || [])
+    } catch(e){ setMessage(e.message) }
+  }
+  async function loadAddRequests(filter = addReqFilter){
+    try {
+      const res = await Api.getAdditionalSubjectRequests(filter)
+      if (res.success) setAddRequests(res.requests || [])
     } catch(e){ setMessage(e.message) }
   }
   async function loadSubjects(){
@@ -255,15 +264,78 @@ export default function AdminManage(){
       <Tabs defaultValue={defaultTab} className="w-full">
         <TabsList className="mb-4 bg-white/70 dark:bg-gray-900/70 border border-black/10 dark:border-white/10 rounded-xl p-1 shadow-sm backdrop-blur">
           <TabsTrigger value="requests">طلبات الاشتراك</TabsTrigger>
+          <TabsTrigger value="add">طلبات إضافة مادة</TabsTrigger>
           <TabsTrigger value="content">إدارة المحتوى</TabsTrigger>
         </TabsList>
+
+        {/* Additional Subject Requests */}
+        <TabsContent value="add" className="space-y-4">
+          <Card className="nurso-hover-lift border-0 ring-1 ring-black/5 dark:ring-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-emerald-600"><path d="M12 4v16m8-8H4"/></svg>
+                <span>طلبات إضافة مادة</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2 mb-4">
+                <Label>الحالة</Label>
+                <select className="border rounded-lg p-2 bg-white/70 dark:bg-gray-900/60 border-black/10 dark:border-white/10 backdrop-blur" value={addReqFilter.status} onChange={async (e)=>{ const nf = { status: e.target.value }; setAddReqFilter(nf); await loadAddRequests(nf); }}>
+                  <option value="pending">قيد المراجعة</option>
+                  <option value="approved">مقبول</option>
+                  <option value="rejected">مرفوض</option>
+                  <option value="all">الكل</option>
+                </select>
+              </div>
+              <div className="overflow-auto rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur">
+                <Table className="text-sm">
+                  <TableHeader className="sticky top-0 bg-background z-10">
+                    <TableRow>
+                      <TableHead>المعرف</TableHead>
+                      <TableHead>الطالب</TableHead>
+                      <TableHead>المادة</TableHead>
+                      <TableHead>الإيصال</TableHead>
+                      <TableHead>الحالة</TableHead>
+                      <TableHead>إجراءات</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {addRequests.map(r => (
+                      <TableRow key={r.id} className="hover:bg-muted/40">
+                        <TableCell>{r.id}</TableCell>
+                        <TableCell>{r?.student?.name} <span className="text-xs text-gray-500">@{r?.student?.username}</span></TableCell>
+                        <TableCell>{r?.subject?.name || '-'}</TableCell>
+                        <TableCell>
+                          {r.receipt_url ? (<a href={r.receipt_url} target="_blank" rel="noreferrer" className="text-emerald-700 hover:underline">عرض الإيصال</a>) : '—'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={r.status === 'pending' ? 'secondary' : (r.status === 'approved' ? 'default' : 'destructive')}>{r.status}</Badge>
+                        </TableCell>
+                        <TableCell className="space-x-2 space-y-1">
+                          {r.status === 'pending' ? (
+                            <>
+                              <Button size="sm" variant="outline" onClick={async ()=>{ setProcessing(p=>({...p,[`add_${r.id}`]:true})); try{ await Api.approveAdditionalSubjectRequest(r.id); await loadAddRequests(); } finally { setProcessing(p=>({...p,[`add_${r.id}`]:false})) } }}>قبول</Button>
+                              <Button size="sm" variant="outline" onClick={async ()=>{ setProcessing(p=>({...p,[`add_${r.id}`]:true})); try{ await Api.rejectAdditionalSubjectRequest(r.id); await loadAddRequests(); } finally { setProcessing(p=>({...p,[`add_${r.id}`]:false})) } }}>رفض</Button>
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-500">—</span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="requests" className="space-y-4">
           <Card className="nurso-hover-lift border-0 ring-1 ring-black/5 dark:ring-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-emerald-600"><path d="M4 4h16v2H4V4zm0 14h16v2H4v-2zM4 9h10v6H4V9zm12 0h4v6h-4V9z"/></svg>
-                <span>الطلبات</span>
+                <span>طلبات الاشتراك</span>
               </CardTitle>
             </CardHeader>
             <CardContent>

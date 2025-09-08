@@ -6,6 +6,11 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
 import { Separator } from '@/components/ui/separator.jsx'
 import { Skeleton } from '@/components/ui/skeleton.jsx'
+import { Button } from '@/components/ui/button.jsx'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog.jsx'
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select.jsx'
+import { Input } from '@/components/ui/input.jsx'
+import { toast } from 'sonner'
 
 // Use direct image path for Profile subject cards. No matching.
 import logo from '../assets/LOGO.png'
@@ -53,6 +58,89 @@ function HeaderSkeleton() {
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+function AddSubjectButton(){
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [available, setAvailable] = useState([])
+  const [subjectId, setSubjectId] = useState('')
+  const [file, setFile] = useState(null)
+  const [error, setError] = useState('')
+
+  async function loadAvailable(){
+    try {
+      const res = await Api.getAvailableSubjects()
+      if (res?.success) setAvailable(res.subjects || [])
+    } catch(e){
+      console.error(e)
+    }
+  }
+
+  function onOpenChange(v){
+    setOpen(v)
+    setError('')
+    if (v) {
+      setSubjectId(''); setFile(null)
+      loadAvailable()
+    }
+  }
+
+  async function onSubmit(e){
+    e?.preventDefault()
+    setError('')
+    if (!subjectId) { setError('من فضلك اختر مادة'); return }
+    if (!file) { setError('إيصال الدفع مطلوب'); return }
+    setLoading(true)
+    try {
+      await Api.createAddSubjectRequest(subjectId, file)
+      toast.success('تم إرسال طلب إضافة المادة بنجاح')
+      setOpen(false)
+    } catch(e){
+      toast.error(e?.message || 'حدث خطأ أثناء الإرسال')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">إضافة مادة</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>طلب إضافة مادة</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm">المادة</label>
+            <Select value={String(subjectId)} onValueChange={v => setSubjectId(v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="اختر مادة من المواد المتاحة" />
+              </SelectTrigger>
+              <SelectContent>
+                {available.map(s => (
+                  <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm">رفع إيصال الدفع</label>
+            <Input type="file" accept="image/*,.pdf" onChange={(e)=> setFile(e.target.files?.[0] || null)} />
+          </div>
+          {error ? <div className="text-red-600 text-sm">{error}</div> : null}
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={()=>setOpen(false)}>إلغاء</Button>
+            <Button type="submit" disabled={loading} className="bg-emerald-600 hover:bg-emerald-700">
+              {loading ? 'جاري الإرسال...' : 'إرسال الطلب'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -200,7 +288,10 @@ export default function Profile() {
           {/* Subjects compact grid SECOND (reduced size) */}
           <Card className="nurso-hover-lift">
             <CardHeader>
-              <CardTitle>المواد المشترك بها</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>المواد المشترك بها</CardTitle>
+                <AddSubjectButton />
+              </div>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {(subjects || []).length > 0 ? (

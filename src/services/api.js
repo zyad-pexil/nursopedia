@@ -178,6 +178,22 @@ class ApiService {
     return this.request('/me/profile');
   }
 
+  // Student: Add Subject flow
+  async getAvailableSubjects() {
+    return this.request('/me/available-subjects');
+  }
+
+  async createAddSubjectRequest(subjectId, file) {
+    const fd = new FormData();
+    fd.append('subject_id', subjectId);
+    fd.append('receipt', file);
+    return this.request('/me/add-subject-request', {
+      method: 'POST',
+      headers: {},
+      body: fd,
+    });
+  }
+
   async getNotifications() {
     return this.request('/me/notifications');
   }
@@ -220,6 +236,21 @@ class ApiService {
 
   async rejectRequest(requestId, notes = '') {
     return this.request(`/admin/subscription-requests/${requestId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ notes }),
+    });
+  }
+
+  // Admin: additional subject requests
+  async getAdditionalSubjectRequests(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return this.request(`/admin/additional-subject-requests${qs ? `?${qs}` : ''}`);
+  }
+  async approveAdditionalSubjectRequest(id) {
+    return this.request(`/admin/additional-subject-requests/${id}/approve`, { method: 'POST' });
+  }
+  async rejectAdditionalSubjectRequest(id, notes = '') {
+    return this.request(`/admin/additional-subject-requests/${id}/reject`, {
       method: 'POST',
       body: JSON.stringify({ notes }),
     });
