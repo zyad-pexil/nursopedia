@@ -124,10 +124,13 @@ export default function Header(){
   return (
     <header
       className={[
-        'w-full sticky top-0 z-50 border-b backdrop-blur shadow-sm transition-colors supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-gray-900/60',
+        'w-full sticky top-0 z-50 border-b shadow-sm transition-colors',
+        // Solid fallback, then semi-transparent if backdrop supported
+        'bg-white/90 dark:bg-gray-900/90 supports-[-webkit-backdrop-filter]:bg-white/60 supports-[-webkit-backdrop-filter]:dark:bg-gray-900/60 supports-[-webkit-backdrop-filter]:backdrop-blur',
+        'supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-gray-900/60 supports-[backdrop-filter]:backdrop-blur',
         location.pathname === '/'
-          ? 'bg-white/70 dark:bg-gray-900/70 border-black/5 dark:border-white/10'
-          : 'bg-white dark:bg-white text-gray-900 dark:text-white border-black/5 dark:border-white/10'
+          ? 'border-black/5 dark:border-white/10'
+          : 'text-gray-900 dark:text-white border-black/5 dark:border-white/10'
       ].join(' ')}
       dir="rtl"
     >

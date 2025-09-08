@@ -10,7 +10,7 @@ export default function Home(){
       <BackgroundSlideshow />
 
       {/* تدرّج خفيف أعلى الخلفية لتحسين القراءة */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80 sm:from-black/40 sm:via-black/25 sm:to-black/70 -z-10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85 sm:from-black/40 sm:via-black/25 sm:to-black/70 -z-10" />
       {/* نمط زخرفي خفيف جداً لزيادة العمق */}
       <div className="pointer-events-none absolute inset-0 opacity-10 -z-10 [background-image:radial-gradient(circle_at_20%_20%,white_2px,transparent_2px),radial-gradient(circle_at_80%_30%,white_2px,transparent_2px)] [background-size:24px_24px]" />
 
@@ -126,7 +126,7 @@ export default function Home(){
 
 function SectionShell({ children, translucent = false }){
   return (
-    <section className={translucent ? 'bg-white/10 backdrop-blur border-y border-white/10' : ''}>
+    <section className={translucent ? 'bg-white/40 border-y border-white/10 supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:backdrop-blur supports-[-webkit-backdrop-filter]:bg-white/10 supports-[-webkit-backdrop-filter]:backdrop-blur supports-glass' : ''}>
       {children}
     </section>
   )
