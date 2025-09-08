@@ -18,6 +18,7 @@ import AdminStudentProfile from './pages/AdminStudentProfile.jsx'
 import ExamPage from './pages/Exam.jsx'
 import Profile from './pages/Profile.jsx'
 import Notifications from './pages/Notifications.jsx'
+import { Toaster } from 'sonner'
 
 function Layout() {
   useEffect(() => {
@@ -31,6 +32,8 @@ function Layout() {
       <Header />
       <Outlet />
       <Footer />
+      {/* Global toast container */}
+      <Toaster richColors position="top-center" closeButton />
     </>
   )
 }
