@@ -194,6 +194,17 @@ class ApiService {
     });
   }
 
+  // Optional helper to send multiple add-subject requests sequentially
+  async createAddSubjectRequests(subjectIds = [], file) {
+    const results = [];
+    for (const sid of subjectIds) {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await this.createAddSubjectRequest(sid, file);
+      results.push(res);
+    }
+    return results;
+  }
+
   async getNotifications() {
     return this.request('/me/notifications');
   }

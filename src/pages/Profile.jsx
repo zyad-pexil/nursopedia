@@ -65,7 +65,7 @@ function AddSubjectButton(){
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [available, setAvailable] = useState([])
-  const [subjectId, setSubjectId] = useState('')
+  const [selectedIds, setSelectedIds] = useState([])
   const [file, setFile] = useState(null)
   const [error, setError] = useState('')
 
@@ -82,7 +82,7 @@ function AddSubjectButton(){
     setOpen(v)
     setError('')
     if (v) {
-      setSubjectId(''); setFile(null)
+      setSelectedIds([]); setFile(null)
       loadAvailable()
     }
   }
@@ -90,11 +90,14 @@ function AddSubjectButton(){
   async function onSubmit(e){
     e?.preventDefault()
     setError('')
-    if (!subjectId) { setError('من فضلك اختر مادة'); return }
+    if (!selectedIds.length) { setError('من فضلك اختر مادة واحدة على الأقل'); return }
     if (!file) { setError('إيصال الدفع مطلوب'); return }
     setLoading(true)
     try {
-      await Api.createAddSubjectRequest(subjectId, file)
+      // Send one request per subject (backend endpoint expects single subject per request)
+      for (const sid of selectedIds) {
+        await Api.createAddSubjectRequest(sid, file)
+      }
       toast.success('تم إرسال الطلب بنجاح. برجاء انتظار موافقة الإدارة.')
       setOpen(false)
     } catch(e){
@@ -104,7 +107,8 @@ function AddSubjectButton(){
     }
   }
 
-  const selected = available.find(s => String(s.id) === String(subjectId)) || null
+  const selectedList = available.filter(s => selectedIds.map(String).includes(String(s.id)))
+  const total = selectedList.reduce((sum, s) => sum + Number(s.price || 0), 0)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,20 +121,34 @@ function AddSubjectButton(){
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm">المادة</label>
-            <Select value={String(subjectId)} onValueChange={v => setSubjectId(v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="اختر مادة من المواد المتاحة" />
-              </SelectTrigger>
-              <SelectContent>
-                {available.map(s => (
-                  <SelectItem key={s.id} value={String(s.id)}>{s.name} — {s.price} جنيه</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {selected && (
+            <label className="text-sm">المواد</label>
+            <div className="max-h-56 overflow-auto border rounded-lg p-2 bg-white/60 dark:bg-gray-900/60">
+              {available.map(s => {
+                const checked = selectedIds.map(String).includes(String(s.id))
+                return (
+                  <label key={s.id} className="flex items-center justify-between gap-2 py-1 cursor-pointer select-none">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4"
+                        checked={checked}
+                        onChange={(e)=>{
+                          if (e.target.checked) setSelectedIds(prev => Array.from(new Set([...prev, s.id])))
+                          else setSelectedIds(prev => prev.filter(id => String(id) !== String(s.id)))
+                        }}
+                      />
+                      <span className="text-sm">{s.name}</span>
+                    </div>
+                    <span className="text-xs text-gray-600">{s.price} جنيه</span>
+                  </label>
+                )
+              })}
+            </div>
+
+            {selectedIds.length > 0 && (
               <div className="mt-2 text-sm bg-green-50 border border-green-200 text-green-800 p-2 rounded-lg">
-                المبلغ المطلوب: <span className="font-semibold">{selected.price}</span> جنيه
+                المبلغ المطلوب: <span className="font-semibold">{total}</span> جنيه
+                <div className="text-xs text-green-700 mt-1">رقم الدفع (فودافون كاش): 01080938298</div>
               </div>
             )}
           </div>
