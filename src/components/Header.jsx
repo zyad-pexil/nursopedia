@@ -116,7 +116,7 @@ export default function Header(){
         >
           تسجيل الدخول
         </Link>
-        <Link to="/register" className="px-3 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition">إنشاء حساب</Link>
+        <Link to="/register" className="px-3 py-2 text-sm rounded-lg btn-primary hover:bg-primary/90 transition">إنشاء حساب</Link>
       </>
     )
   )
@@ -144,7 +144,7 @@ export default function Header(){
             <span className={[
               'text-lg sm:text-xl font-extrabold tracking-tight',
               location.pathname === '/'
-                ? 'bg-gradient-to-r from-black/90 via-black/80 to-black/70 dark:from-white dark:via-white/90 dark:to-white/80 bg-clip-text text-transparent'
+                ? 'text-black dark:text-white supports-[background-clip:text]:bg-gradient-to-r supports-[background-clip:text]:from-black/90 supports-[background-clip:text]:via-black/80 supports-[background-clip:text]:to-black/70 supports-[background-clip:text]:dark:from-white supports-[background-clip:text]:dark:via-white/90 supports-[background-clip:text]:dark:to-white/80 supports-[background-clip:text]:bg-clip-text supports-[background-clip:text]:text-transparent'
                 : 'text-gray-900 dark:text-white'
             ].join(' ')}>
               Team Nursopedia

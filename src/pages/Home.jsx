@@ -32,7 +32,7 @@ export default function Home(){
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Link to="/login" className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary text-white shadow-lg shadow-black/30 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition">
+                <Link to="/login" className="inline-flex items-center justify-center px-6 py-3 rounded-lg btn-primary shadow-lg shadow-black/30 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition">
                   ابدأ الآن
                   <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
                 </Link>
