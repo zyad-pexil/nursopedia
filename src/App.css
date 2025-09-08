@@ -205,17 +205,20 @@
   .backdrop-blur-lg { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
 
   /* Primary button utility with legacy-safe fallback */
-  .btn-primary { 
+  .btn-primary {
+    /* Old browsers first */
+    background-color: #22c55e; /* emerald-500 */
+    color: #ffffff;
+    /* Modern override using CSS variables */
     background-color: var(--primary);
     color: var(--primary-foreground);
     border-radius: 0.5rem;
   }
-  .btn-primary:hover { 
+  .btn-primary:hover {
+    /* Old browsers first */
+    background-color: #16a34a; /* emerald-600 */
+    /* Modern override (ignored if unsupported) */
     background-color: color-mix(in oklch, var(--primary), black 10%);
-  }
-  @supports not (color: oklch(0.5 0.1 120)) {
-    .btn-primary { background-color: #22c55e !important; color: #111827 !important; }
-    .btn-primary:hover { background-color: #16a34a !important; }
   }
   
   /* RTL support for inputs and forms */
