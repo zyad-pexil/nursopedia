@@ -95,7 +95,7 @@ function AddSubjectButton(){
     setLoading(true)
     try {
       await Api.createAddSubjectRequest(subjectId, file)
-      toast.success('تم إرسال طلب إضافة المادة بنجاح')
+      toast.success('تم إرسال الطلب بنجاح. برجاء انتظار موافقة الإدارة.')
       setOpen(false)
     } catch(e){
       toast.error(e?.message || 'حدث خطأ أثناء الإرسال')
@@ -103,6 +103,8 @@ function AddSubjectButton(){
       setLoading(false)
     }
   }
+
+  const selected = available.find(s => String(s.id) === String(subjectId)) || null
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -122,10 +124,15 @@ function AddSubjectButton(){
               </SelectTrigger>
               <SelectContent>
                 {available.map(s => (
-                  <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+                  <SelectItem key={s.id} value={String(s.id)}>{s.name} — {s.price} جنيه</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {selected && (
+              <div className="mt-2 text-sm bg-green-50 border border-green-200 text-green-800 p-2 rounded-lg">
+                المبلغ المطلوب: <span className="font-semibold">{selected.price}</span> جنيه
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <label className="text-sm">رفع إيصال الدفع</label>
