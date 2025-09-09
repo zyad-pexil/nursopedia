@@ -296,6 +296,7 @@ export default function AdminManage(){
                       <TableHead>الطالب</TableHead>
                       <TableHead>المادة</TableHead>
                       <TableHead>الإيصال</TableHead>
+                      <TableHead>المجموع</TableHead>
                       <TableHead>الحالة</TableHead>
                       <TableHead>إجراءات</TableHead>
                     </TableRow>
@@ -308,6 +309,9 @@ export default function AdminManage(){
                         <TableCell>{r?.subject?.name || '-'}</TableCell>
                         <TableCell>
                           {r.receipt_url ? (<a href={r.receipt_url} target="_blank" rel="noreferrer" className="text-emerald-700 hover:underline">عرض الإيصال</a>) : '—'}
+                        </TableCell>
+                        <TableCell>
+                          {Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(Number(r?.subject?.price || 0))}
                         </TableCell>
                         <TableCell>
                           <Badge variant={r.status === 'pending' ? 'secondary' : (r.status === 'approved' ? 'default' : 'destructive')}>{r.status}</Badge>
