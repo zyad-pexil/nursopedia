@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table.jsx'
+import { toast } from 'sonner'
 
 export default function AdminManage(){
   const [loading, setLoading] = useState(false)
@@ -60,7 +61,7 @@ export default function AdminManage(){
     try {
       const res = await Api.getAdditionalSubjectRequests(filter)
       if (res.success) setAddRequests(res.requests || [])
-    } catch(e){ setMessage(e.message) }
+    } catch(e){ setMessage(e.message); toast.error(e?.message || 'تعذر تحميل طلبات إضافة المواد') }
   }
   async function loadSubjects(){
     try {
@@ -314,8 +315,30 @@ export default function AdminManage(){
                         <TableCell className="space-x-2 space-y-1">
                           {r.status === 'pending' ? (
                             <>
-                              <Button size="sm" variant="outline" onClick={async ()=>{ setProcessing(p=>({...p,[`add_${r.id}`]:true})); try{ await Api.approveAdditionalSubjectRequest(r.id); await loadAddRequests(); } finally { setProcessing(p=>({...p,[`add_${r.id}`]:false})) } }}>قبول</Button>
-                              <Button size="sm" variant="outline" onClick={async ()=>{ setProcessing(p=>({...p,[`add_${r.id}`]:true})); try{ await Api.rejectAdditionalSubjectRequest(r.id); await loadAddRequests(); } finally { setProcessing(p=>({...p,[`add_${r.id}`]:false})) } }}>رفض</Button>
+                              <Button size="sm" variant="outline" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
+                                setProcessing(p=>({...p,[`add_${r.id}`]:true}))
+                                try{
+                                  await Api.approveAdditionalSubjectRequest(r.id)
+                                  toast.success('تم قبول الطلب')
+                                  await loadAddRequests(addReqFilter)
+                                } catch(e){
+                                  toast.error(e?.message || 'فشل القبول')
+                                } finally {
+                                  setProcessing(p=>({...p,[`add_${r.id}`]:false}))
+                                }
+                              }}>قبول</Button>
+                              <Button size="sm" variant="outline" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
+                                setProcessing(p=>({...p,[`add_${r.id}`]:true}))
+                                try{
+                                  await Api.rejectAdditionalSubjectRequest(r.id)
+                                  toast.success('تم رفض الطلب')
+                                  await loadAddRequests(addReqFilter)
+                                } catch(e){
+                                  toast.error(e?.message || 'فشل الرفض')
+                                } finally {
+                                  setProcessing(p=>({...p,[`add_${r.id}`]:false}))
+                                }
+                              }}>رفض</Button>
                             </>
                           ) : (
                             <span className="text-xs text-gray-500">—</span>
