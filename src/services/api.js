@@ -1,4 +1,6 @@
 // API service for communicating with the backend
+import { toast } from 'sonner'
+
 const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL)
   ? import.meta.env.VITE_API_BASE_URL
   : (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'http://localhost:5000/api');
@@ -51,6 +53,12 @@ class ApiService {
         // Auto logout on session conflicts or invalid session
         const status = response.status;
         const m = (msg || '').toString();
+        if (status === 409 && (m.includes('هذا الحساب مسجل دخول') || m.includes('تم تسجيل دخولك من جهاز آخر'))) {
+          toast.warning('⚠️ هذا الحساب مسجل دخول بالفعل من جهاز آخر')
+        }
+        if (status === 401 && (m.includes('انتهت صلاحية الجلسة') || m.includes('Expired'))) {
+          toast.info('⏳ انتهت صلاحية الجلسة، الرجاء تسجيل الدخول من جديد')
+        }
         if (status === 401 || status === 409) {
           if (m.includes('تم تسجيل دخولك من جهاز آخر') || m.includes('هذا الحساب مسجل دخول') || m.includes('انتهت صلاحية الجلسة')) {
             try { await this.logout(); } catch (_) {}
@@ -350,6 +358,7 @@ class ApiService {
     try {
       // Call backend to invalidate current session id
       await this.request('/auth/logout', { method: 'POST' });
+      toast.success('✅ تم تسجيل الخروج بنجاح')
     } catch (e) {
       // Even if server call fails, proceed with local cleanup
       console.warn('Logout API failed or session already invalid:', e?.message || e);
