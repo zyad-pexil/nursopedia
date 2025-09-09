@@ -48,7 +48,18 @@ class ApiService {
       }
       if (!response.ok) {
         const msg = (data && (data.message || data.error || data.detail)) || `HTTP ${response.status}`;
-        throw new Error(msg);
+        // Auto logout on session conflicts or invalid session
+        const status = response.status;
+        const m = (msg || '').toString();
+        if (status === 401 || status === 409) {
+          if (m.includes('تم تسجيل دخولك من جهاز آخر') || m.includes('هذا الحساب مسجل دخول') || m.includes('انتهت صلاحية الجلسة')) {
+            try { await this.logout(); } catch (_) {}
+          }
+        }
+        const err = new Error(m);
+        err.status = status;
+        err.data = data;
+        throw err;
       }
       return data;
     } catch (error) {
@@ -335,7 +346,14 @@ class ApiService {
     return user ? JSON.parse(user) : null;
   }
 
-  logout() {
+  async logout() {
+    try {
+      // Call backend to invalidate current session id
+      await this.request('/auth/logout', { method: 'POST' });
+    } catch (e) {
+      // Even if server call fails, proceed with local cleanup
+      console.warn('Logout API failed or session already invalid:', e?.message || e);
+    }
     this.token = null;
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');

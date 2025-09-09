@@ -71,10 +71,10 @@ export default function Header(){
     localStorage.setItem('theme', next ? 'dark' : 'light')
   }
 
-  function logout(){
+  async function logout(){
     try {
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('user')
+      const api = (await import('../services/api.js')).default
+      await api.logout()
     } catch {}
     navigate('/login', { replace: true })
   }
