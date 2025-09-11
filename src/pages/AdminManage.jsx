@@ -288,17 +288,17 @@ export default function AdminManage(){
                   <option value="all">الكل</option>
                 </select>
               </div>
-              <div className="overflow-auto rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur">
-                <Table className="text-sm">
-                  <TableHeader className="sticky top-0 bg-background z-10">
+              <div className="overflow-x-auto">
+                <Table className="min-w-full">
+                  <TableHeader>
                     <TableRow>
-                      <TableHead>المعرف</TableHead>
-                      <TableHead>الطالب</TableHead>
-                      <TableHead>المادة</TableHead>
-                      <TableHead>الإيصال</TableHead>
-                      <TableHead>المجموع</TableHead>
-                      <TableHead>الحالة</TableHead>
-                      <TableHead>إجراءات</TableHead>
+                      <TableHead className="w-16">المعرف</TableHead>
+                      <TableHead className="min-w-48">الطالب</TableHead>
+                      <TableHead className="min-w-32">المادة</TableHead>
+                      <TableHead className="min-w-24">الإيصال</TableHead>
+                      <TableHead className="min-w-24">المجموع</TableHead>
+                      <TableHead className="min-w-24">الحالة</TableHead>
+                      <TableHead className="min-w-32">إجراءات</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -381,17 +381,17 @@ export default function AdminManage(){
                   <Button variant="outline" onClick={async ()=>{ const nf = { status: reqFilter.status, search: '' }; setReqFilter(nf); await loadRequests(nf); }}>مسح</Button>
                 </div>
               </div>
-              <div className="overflow-auto rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur">
-                <Table className="text-sm">
-                  <TableHeader className="sticky top-0 bg-background z-10">
+              <div className="overflow-x-auto">
+                <Table className="min-w-full">
+                  <TableHeader>
                   <TableRow>
-                    <TableHead>المعرف</TableHead>
-                    <TableHead>اسم المستخدم</TableHead>
-                    <TableHead>المواد المختارة</TableHead>
-                    <TableHead>الإيصال</TableHead>
-                    <TableHead>المجموع</TableHead>
-                    <TableHead>الحالة</TableHead>
-                    <TableHead>إجراءات</TableHead>
+                    <TableHead className="w-16">المعرف</TableHead>
+                    <TableHead className="min-w-32">اسم المستخدم</TableHead>
+                    <TableHead className="min-w-48">المواد المختارة</TableHead>
+                    <TableHead className="min-w-24">الإيصال</TableHead>
+                    <TableHead className="min-w-24">المجموع</TableHead>
+                    <TableHead className="min-w-24">الحالة</TableHead>
+                    <TableHead className="min-w-40">إجراءات</TableHead>
                   </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -507,17 +507,17 @@ export default function AdminManage(){
                   </Button>
                 </div>
 
-                <div className="overflow-auto rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur">
-                  <Table className="text-sm">
-                    <TableHeader className="sticky top-0 bg-background z-10">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
                     <TableRow>
-                      <TableHead>العنوان</TableHead>
-                      <TableHead>الفيديو</TableHead>
-                      <TableHead>ترتيب</TableHead>
-                      <TableHead>نشط</TableHead>
-                      <TableHead>مرفقات</TableHead>
-                      <TableHead>امتحانات</TableHead>
-                      <TableHead>حفظ/حذف</TableHead>
+                      <TableHead className="min-w-48">العنوان</TableHead>
+                      <TableHead className="min-w-48">الفيديو</TableHead>
+                      <TableHead className="w-20">ترتيب</TableHead>
+                      <TableHead className="w-16">نشط</TableHead>
+                      <TableHead className="min-w-32">مرفقات</TableHead>
+                      <TableHead className="min-w-32">امتحانات</TableHead>
+                      <TableHead className="min-w-32">حفظ/حذف</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -614,15 +614,15 @@ export default function AdminManage(){
                     <span>إضافة امتحان</span>
                   </Button>
                 </div>
-                <div className="overflow-auto rounded-xl border">
-                  <Table className="text-sm">
-                    <TableHeader className="sticky top-0 bg-background z-10">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
                     <TableRow>
-                      <TableHead>العنوان</TableHead>
-                      <TableHead>المدة</TableHead>
-                      <TableHead>أسئلة</TableHead>
-                      <TableHead>نشط</TableHead>
-                      <TableHead>حفظ/حذف</TableHead>
+                      <TableHead className="min-w-48">العنوان</TableHead>
+                      <TableHead className="w-20">المدة</TableHead>
+                      <TableHead className="w-20">أسئلة</TableHead>
+                      <TableHead className="w-16">نشط</TableHead>
+                      <TableHead className="min-w-32">حفظ/حذف</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -687,15 +687,15 @@ export default function AdminManage(){
                   </Button>
                 </div>
 
-                <div className="overflow-auto rounded-xl border">
-                  <Table className="text-sm">
-                    <TableHeader className="sticky top-0 bg-background z-10">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
                       <TableRow>
-                        <TableHead>السؤال</TableHead>
-                        <TableHead>الترتيب</TableHead>
-                        <TableHead>نشط</TableHead>
-                        <TableHead>إجابات</TableHead>
-                        <TableHead>حفظ/حذف</TableHead>
+                        <TableHead className="min-w-48">السؤال</TableHead>
+                        <TableHead className="w-20">الترتيب</TableHead>
+                        <TableHead className="w-16">نشط</TableHead>
+                        <TableHead className="min-w-32">إجابات</TableHead>
+                        <TableHead className="min-w-32">حفظ/حذف</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
