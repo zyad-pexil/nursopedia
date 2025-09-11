@@ -146,6 +146,14 @@ class ApiService {
     return response;
   }
 
+  // Re-verification before viewing protected content (no single-session enforcement)
+  async reverifyPassword(password) {
+    return this.request('/auth/reverify', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+  }
+
   // Academic data methods
   async getAcademicYears() {
     const response = await this.request('/auth/academic-years');
