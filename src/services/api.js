@@ -50,16 +50,19 @@ class ApiService {
       }
       if (!response.ok) {
         const msg = (data && (data.message || data.error || data.detail)) || `HTTP ${response.status}`;
-        // Auto logout on session conflicts or invalid session
+        // Auto logout on session conflicts or invalid session (except for /auth/reverify)
         const status = response.status;
         const m = (msg || '').toString();
+        const isReverify = endpoint === '/auth/reverify';
+
         if (status === 409 && (m.includes('هذا الحساب مسجل دخول') || m.includes('تم تسجيل دخولك من جهاز آخر'))) {
           toast.warning('⚠️ هذا الحساب مسجل دخول بالفعل من جهاز آخر')
         }
         if (status === 401 && (m.includes('انتهت صلاحية الجلسة') || m.includes('Expired'))) {
           toast.info('⏳ انتهت صلاحية الجلسة، الرجاء تسجيل الدخول من جديد')
         }
-        if (status === 401 || status === 409) {
+        // Do not auto-logout for reverify failures
+        if (!isReverify && (status === 401 || status === 409)) {
           if (m.includes('تم تسجيل دخولك من جهاز آخر') || m.includes('هذا الحساب مسجل دخول') || m.includes('انتهت صلاحية الجلسة')) {
             try { await this.logout(); } catch (_) {}
           }

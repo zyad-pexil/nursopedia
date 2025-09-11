@@ -17,7 +17,7 @@ function ReAuth({ onVerify, loading }) {
     e.preventDefault()
     setError('')
     try {
-      const res = await Api.login(username, password)
+      const res = await Api.reverifyPassword(password)
       if (res.success) {
         onVerify()
       } else {
