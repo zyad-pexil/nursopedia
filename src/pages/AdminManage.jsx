@@ -646,7 +646,7 @@ export default function AdminManage(){
                         <TableCell className="text-center font-medium">{e.questions_count ?? (e.questions?.length || 0)}</TableCell>
                         <TableCell className="text-center"><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={e.is_active} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,is_active:ev.target.checked}:x))} /></TableCell>
                         <TableCell>
-                          <Button size="sm" onClick={async ()=>{ setSelectedExam(e.id); setQuestionForm(f=({exam_id:e.id})); await loadQuestions(e.id) }} className="w-full">
+                          <Button size="sm" onClick={async ()=>{ setSelectedExam(e.id); setQuestionForm(f=>({...f, exam_id:e.id})); await loadQuestions(e.id) }} className="w-full">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
                             عرض الأسئلة
                           </Button>
