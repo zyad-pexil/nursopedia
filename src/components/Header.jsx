@@ -83,15 +83,15 @@ export default function Header(){
     token && user ? (
       <>
         {user?.user_type !== 'admin' && (
-          <Link to="/dashboard" className="inline-flex md:hidden px-3 py-2 text-sm rounded-lg transition 
+          <Link to="/dashboard" className="inline-flex md:hidden px-3 py-2 text-sm rounded-lg transition
             bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white">
             لوحة الطالب
           </Link>
         )}
         {user?.user_type === 'admin' && (
           <>
-            <Link to="/admin" className="md:hidden px-3 py-2 text-sm rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 transition">لوحة المشرف</Link>
-            <Link to="/admin/manage" className="md:hidden px-3 py-2 text-sm rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 transition">الإدارة</Link>
+            <Link to="/admin" className={`md:hidden px-3 py-2 text-sm rounded-lg transition ${isDark ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white' : 'bg-black/10 border-black/20 hover:bg-black/20 text-black'}`}>لوحة المشرف</Link>
+            <Link to="/admin/manage" className={`md:hidden px-3 py-2 text-sm rounded-lg transition ${isDark ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white' : 'bg-black/10 border-black/20 hover:bg-black/20 text-black'}`}>الإدارة</Link>
           </>
         )}
         <Link to="/notifications" className="relative p-2 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition" aria-label="الإشعارات">
@@ -110,7 +110,7 @@ export default function Header(){
           className={[
             'px-3 py-2 text-sm rounded-lg transition border',
             location.pathname === '/'
-              ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white'
+              ? `${isDark ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white' : 'bg-black/10 border-black/20 hover:bg-black/20 text-black'}`
               : 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white'
           ].join(' ')}
         >
@@ -186,7 +186,7 @@ export default function Header(){
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-3 text-white">
+        <nav className={`hidden md:flex items-center gap-3 ${isDark ? 'text-white' : 'text-black'}`}>
           <button onClick={toggleDark} aria-label="تبديل الوضع" className="p-2 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition">
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
@@ -195,10 +195,10 @@ export default function Header(){
 
         {/* Mobile controls */}
         <div className="md:hidden flex items-center gap-2">
-          <button onClick={toggleDark} aria-label="تبديل الوضع" className="p-2 rounded-lg bg-white/10 border border-white/20 text-white">
+          <button onClick={toggleDark} aria-label="تبديل الوضع" className={`p-2 rounded-lg transition ${isDark ? 'bg-white/10 border-white/20 text-white' : 'bg-black/10 border-black/20 text-black'}`}>
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-          <button onClick={() => setMobileOpen(v => !v)} aria-label="القائمة" className="p-2 rounded-lg bg-white/10 border border-white/20 text-white">
+          <button onClick={() => setMobileOpen(v => !v)} aria-label="القائمة" className={`p-2 rounded-lg transition ${isDark ? 'bg-white/10 border-white/20 text-white' : 'bg-black/10 border-black/20 text-black'}`}>
             <Menu className="w-5 h-5" />
           </button>
         </div>
@@ -206,8 +206,8 @@ export default function Header(){
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-white/10 bg-white/10 backdrop-blur animate-fade-in">
-          <div className="nurso-container py-3 flex flex-col gap-3 text-white">
+        <div className={`md:hidden border-t backdrop-blur animate-fade-in ${isDark ? 'border-white/10 bg-white/10 text-white' : 'border-black/10 bg-black/10 text-black'}`}>
+          <div className="nurso-container py-3 flex flex-col gap-3">
             <NavAuth />
           </div>
         </div>
