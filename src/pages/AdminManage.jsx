@@ -511,27 +511,34 @@ export default function AdminManage(){
                   <Table className="min-w-full">
                     <TableHeader>
                     <TableRow>
-                      <TableHead className="min-w-48">العنوان</TableHead>
-                      <TableHead className="min-w-48">الفيديو</TableHead>
+                      <TableHead className="w-16">#</TableHead>
+                      <TableHead className="min-w-40">العنوان</TableHead>
+                      <TableHead className="min-w-40">الفيديو</TableHead>
                       <TableHead className="w-20">ترتيب</TableHead>
                       <TableHead className="w-16">نشط</TableHead>
                       <TableHead className="min-w-32">مرفقات</TableHead>
                       <TableHead className="min-w-32">امتحانات</TableHead>
-                      <TableHead className="min-w-32">حفظ/حذف</TableHead>
+                      <TableHead className="min-w-40">إجراءات</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {lessons.map(l => (
+                    {lessons.map((l, index) => (
                       <TableRow key={l.id} className="hover:bg-muted/40">
-                        <TableCell><Input value={l.title} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,title:e.target.value}:x))} /></TableCell>
-                        <TableCell><Input value={l.video_url||''} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,video_url:e.target.value}:x))} /></TableCell>
-                        <TableCell><Input value={l.lesson_order} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,lesson_order:e.target.value}:x))} /></TableCell>
-                        <TableCell><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={l.is_active} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,is_active:e.target.checked}:x))} /></TableCell>
+                        <TableCell className="font-medium">{index + 1}</TableCell>
+                        <TableCell><Input value={l.title} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,title:e.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell><Input value={l.video_url||''} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,video_url:e.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell><Input value={l.lesson_order} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,lesson_order:e.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell className="text-center"><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={l.is_active} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,is_active:e.target.checked}:x))} /></TableCell>
                         <TableCell>
-                          <details open>
-                            <summary>المرفقات</summary>
-                            <div className="p-2 space-y-2">
-                              <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center">
+                          <details className="group">
+                            <summary className="cursor-pointer text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+                              <svg className="h-4 w-4 group-open:rotate-90 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
+                              </svg>
+                              المرفقات ({(l.attachments||[]).length})
+                            </summary>
+                            <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-3">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-end">
                                 <Input placeholder="الاسم" value={(attachDrafts[l.id]?.name)||''} onChange={e=>setAttachDrafts(prev=>({...prev,[l.id]:{...(prev[l.id]||{}), name:e.target.value}}))} />
                                 <Input placeholder="الرابط" value={(attachDrafts[l.id]?.url)||''} onChange={e=>setAttachDrafts(prev=>({...prev,[l.id]:{...(prev[l.id]||{}), url:e.target.value}}))} />
                                 <Button size="sm" onClick={()=>{
@@ -543,14 +550,14 @@ export default function AdminManage(){
                                     return { ...x, attachments: next }
                                   }))
                                   setAttachDrafts(prev=>({ ...prev, [l.id]: { name:'', url:'' } }))
-                                }}>إضافة</Button>
+                                }} className="h-9">إضافة</Button>
                               </div>
                               <div className="space-y-2">
                                 {(l.attachments||[]).map((a, idx) => (
-                                  <div key={idx} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
+                                  <div key={idx} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center p-2 bg-background/50 rounded">
                                     <Input value={a.name||''} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,attachments:(x.attachments||[]).map((y,i)=>i===idx?{...y,name:e.target.value}:y)}:x))} />
                                     <Input value={a.url||''} onChange={e=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,attachments:(x.attachments||[]).map((y,i)=>i===idx?{...y,url:e.target.value}:y)}:x))} />
-                                    <a className="text-primary underline" href={a.url} target="_blank" rel="noreferrer">فتح</a>
+                                    <a className="text-primary underline text-sm" href={a.url} target="_blank" rel="noreferrer">فتح</a>
                                     <Button size="sm" onClick={()=>updateLesson({ ...l })}>حفظ</Button>
                                     <Button size="sm" variant="destructive" onClick={()=>setLessons(prev=>prev.map(x=>x.id===l.id?{...x,attachments:(x.attachments||[]).filter((_,i)=>i!==idx)}:x))}>حذف</Button>
                                   </div>
@@ -559,25 +566,26 @@ export default function AdminManage(){
                             </div>
                           </details>
                         </TableCell>
-                        <TableCell className="space-y-2">
-                          <div className="text-sm text-gray-600">مرفقات: {(l.attachments||[]).length}</div>
-                          <div className="flex gap-2">
-                            <Button size="sm" onClick={async ()=>{ setSelectedLesson(l.id); setExamForm(f=>({...f, lesson_id:l.id})); await loadExams(l.id) }} className="h-9 px-3 inline-flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
-                              <span>عرض الامتحانات</span>
+                        <TableCell>
+                          <div className="space-y-2">
+                            <div className="text-sm text-muted-foreground">عدد الامتحانات: {l.exams_count || 0}</div>
+                            <Button size="sm" onClick={async ()=>{ setSelectedLesson(l.id); setExamForm(f=>({...f, lesson_id:l.id})); await loadExams(l.id) }} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
+                              عرض الامتحانات
                             </Button>
-
                           </div>
                         </TableCell>
-                        <TableCell className="space-x-2">
-                          <Button size="sm" onClick={()=>updateLesson(l)} className="h-9 px-3 inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
-                            <span>حفظ</span>
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={()=>deleteLesson(l)} className="h-9 px-3 inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
-                            <span>حذف</span>
-                          </Button>
+                        <TableCell>
+                          <div className="flex flex-col gap-2">
+                            <Button size="sm" onClick={()=>updateLesson(l)} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
+                              حفظ
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={()=>deleteLesson(l)} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                              حذف
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -618,35 +626,42 @@ export default function AdminManage(){
                   <Table className="min-w-full">
                     <TableHeader>
                     <TableRow>
-                      <TableHead className="min-w-48">العنوان</TableHead>
-                      <TableHead className="w-20">المدة</TableHead>
+                      <TableHead className="w-16">#</TableHead>
+                      <TableHead className="min-w-40">العنوان</TableHead>
+                      <TableHead className="w-24">المدة (دقيقة)</TableHead>
+                      <TableHead className="w-24">درجة النجاح</TableHead>
                       <TableHead className="w-20">أسئلة</TableHead>
                       <TableHead className="w-16">نشط</TableHead>
-                      <TableHead className="min-w-32">حفظ/حذف</TableHead>
+                      <TableHead className="min-w-32">عرض الأسئلة</TableHead>
+                      <TableHead className="min-w-40">إجراءات</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {exams.map(e => (
+                    {exams.map((e, index) => (
                       <TableRow key={e.id} className="hover:bg-muted/40">
-                        <TableCell><Input value={e.title} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,title:ev.target.value}:x))} /></TableCell>
-                        <TableCell><Input value={e.duration_minutes} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,duration_minutes:ev.target.value}:x))} /></TableCell>
-                        <TableCell>{e.questions_count ?? (e.questions?.length || 0)}</TableCell>
-                        <TableCell><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={e.is_active} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,is_active:ev.target.checked}:x))} /></TableCell>
+                        <TableCell className="font-medium">{index + 1}</TableCell>
+                        <TableCell><Input value={e.title} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,title:ev.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell><Input value={e.duration_minutes} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,duration_minutes:ev.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell><Input value={e.passing_score} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,passing_score:ev.target.value}:x))} className="w-full" /></TableCell>
+                        <TableCell className="text-center font-medium">{e.questions_count ?? (e.questions?.length || 0)}</TableCell>
+                        <TableCell className="text-center"><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={e.is_active} onChange={ev=>setExams(prev=>prev.map(x=>x.id===e.id?{...x,is_active:ev.target.checked}:x))} /></TableCell>
                         <TableCell>
-                          <Button size="sm" onClick={async ()=>{ setSelectedExam(e.id); setQuestionForm(f=>({...f, exam_id:e.id})); await loadQuestions(e.id) }} className="h-9 px-3 inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
-                            <span>عرض</span>
+                          <Button size="sm" onClick={async ()=>{ setSelectedExam(e.id); setQuestionForm(f=({exam_id:e.id})); await loadQuestions(e.id) }} className="w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
+                            عرض الأسئلة
                           </Button>
                         </TableCell>
-                        <TableCell className="space-x-2">
-                          <Button size="sm" onClick={()=>updateExam(e)} className="h-9 px-3 inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
-                            <span>حفظ</span>
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={()=>deleteExam(e)} className="h-9 px-3 inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
-                            <span>حذف</span>
-                          </Button>
+                        <TableCell>
+                          <div className="flex flex-col gap-2">
+                            <Button size="sm" onClick={()=>updateExam(e)} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
+                              حفظ
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={()=>deleteExam(e)} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                              حذف
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -691,73 +706,92 @@ export default function AdminManage(){
                   <Table className="min-w-full">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="min-w-48">السؤال</TableHead>
+                        <TableHead className="w-16">#</TableHead>
+                        <TableHead className="min-w-40">السؤال</TableHead>
                         <TableHead className="w-20">الترتيب</TableHead>
+                        <TableHead className="w-24">النوع</TableHead>
                         <TableHead className="w-16">نشط</TableHead>
                         <TableHead className="min-w-32">إجابات</TableHead>
-                        <TableHead className="min-w-32">حفظ/حذف</TableHead>
+                        <TableHead className="min-w-40">إجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {questions.map(q => (
+                      {questions.map((q, index) => (
                         <TableRow key={q.id} className="hover:bg-muted/40">
-                          <TableCell><Input value={q.question_text} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,question_text:e.target.value}:x))} /></TableCell>
-                          <TableCell><Input value={q.order} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,order:e.target.value}:x))} /></TableCell>
-                          <TableCell><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={q.is_active} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,is_active:e.target.checked}:x))} /></TableCell>
+                          <TableCell className="font-medium">{index + 1}</TableCell>
+                          <TableCell><Input value={q.question_text} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,question_text:e.target.value}:x))} className="w-full" /></TableCell>
+                          <TableCell><Input value={q.order} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,order:e.target.value}:x))} className="w-full" /></TableCell>
                           <TableCell>
-                            <details>
-                              <summary>عرض الإجابات</summary>
-                              <div className="p-2 space-y-2">
-                                {(q.answers||[]).map(a => (
-                                  <div key={a.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
-                                    <Input value={a.answer_text} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,answers:(x.answers||[]).map(y=>y.id===a.id?{...y,answer_text:e.target.value}:y)}:x))} />
-                                    <label className="flex items-center gap-2">
-                                      <input type="checkbox" checked={a.is_correct} onChange={e=>{
-                                        // enforce single correct answer in UI
-                                        const checked = e.target.checked
-                                        setQuestions(prev=>prev.map(x=>{
-                                          if (x.id!==q.id) return x
-                                          return {
-                                            ...x,
-                                            answers: (x.answers||[]).map(y => ({...y, is_correct: y.id===a.id ? checked : false}))
-                                          }
-                                        }))
-                                      }} /> صحيحة
-                                    </label>
-                                    <Input value={a.order} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,answers:(x.answers||[]).map(y=>y.id===a.id?{...y,order:e.target.value}:y)}:x))} />
-                                    <Button size="sm" onClick={async ()=>{ await Api.updateAnswer(a.id, { answer_text:a.answer_text, is_correct:a.is_correct, order:a.order, is_active:a.is_active }); await loadQuestions(q.exam_id) }} className="h-9 px-3 inline-flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
-                                        <span>حفظ</span>
+                            <select className="w-full border rounded-lg p-2 bg-white/70 dark:bg-gray-900/60 border-black/10 dark:border-white/10 backdrop-blur" value={q.question_type} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,question_type:e.target.value}:x))}>
+                              <option value="multiple_choice">اختيار من متعدد</option>
+                              <option value="true_false">صح/خطأ</option>
+                              <option value="short_answer">إجابة قصيرة</option>
+                            </select>
+                          </TableCell>
+                          <TableCell className="text-center"><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={q.is_active} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,is_active:e.target.checked}:x))} /></TableCell>
+                          <TableCell>
+                            <details className="group">
+                              <summary className="cursor-pointer text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+                                <svg className="h-4 w-4 group-open:rotate-90 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
+                                </svg>
+                                الإجابات ({(q.answers||[]).length})
+                              </summary>
+                              <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-3">
+                                <div className="space-y-2">
+                                  {(q.answers||[]).map(a => (
+                                    <div key={a.id} className="grid grid-cols-1 md:grid-cols-6 gap-2 items-center p-2 bg-background/50 rounded">
+                                      <Input value={a.answer_text} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,answers:(x.answers||[]).map(y=>y.id===a.id?{...y,answer_text:e.target.value}:y)}:x))} />
+                                      <label className="flex items-center gap-2">
+                                        <input type="checkbox" checked={a.is_correct} onChange={e=>{
+                                          // enforce single correct answer in UI
+                                          const checked = e.target.checked
+                                          setQuestions(prev=>prev.map(x=>{
+                                            if (x.id!==q.id) return x
+                                            return {
+                                              ...x,
+                                              answers: (x.answers||[]).map(y => ({...y, is_correct: y.id===a.id ? checked : false}))
+                                            }
+                                          }))
+                                        }} /> صحيحة
+                                      </label>
+                                      <Input value={a.order} onChange={e=>setQuestions(prev=>prev.map(x=>x.id===q.id?{...x,answers:(x.answers||[]).map(y=>y.id===a.id?{...y,order:e.target.value}:y)}:x))} />
+                                      <Button size="sm" onClick={async ()=>{ await Api.updateAnswer(a.id, { answer_text:a.answer_text, is_correct:a.is_correct, order:a.order, is_active:a.is_active }); await loadQuestions(q.exam_id) }} className="h-9">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
+                                        حفظ
                                       </Button>
-                                      <Button size="sm" variant="destructive" onClick={async ()=>{ await Api.deleteAnswer(a.id); await loadQuestions(q.exam_id) }} className="h-9 px-3 inline-flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
-                                        <span>حذف</span>
+                                      <Button size="sm" variant="destructive" onClick={async ()=>{ await Api.deleteAnswer(a.id); await loadQuestions(q.exam_id) }} className="h-9">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                                        حذف
                                       </Button>
-                                  </div>
-                                ))}
-                                <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-6 gap-2 items-center p-2 bg-background/30 rounded border-2 border-dashed border-muted-foreground/20">
                                   <Input placeholder="نص الإجابة" value={answerForm.answer_text} onChange={e=>setAnswerForm({...answerForm,answer_text:e.target.value, question_id:q.id})} />
                                   <label className="flex items-center gap-2">
                                     <input type="checkbox" checked={answerForm.is_correct} onChange={e=>setAnswerForm({...answerForm,is_correct:e.target.checked})} /> صحيحة
                                   </label>
                                   <Input placeholder="الترتيب" value={answerForm.order} onChange={e=>setAnswerForm({...answerForm,order:e.target.value})} />
-                                  <Button size="sm" onClick={createAnswer} className="h-9 px-3 inline-flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M19 13H5v-2h14v2zM5 6h14v2H5V6zm0 12h14v2H5v-2z"/></svg>
-                                    <span>إضافة</span>
+                                  <Button size="sm" onClick={createAnswer} className="h-9">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M19 13H5v-2h14v2zM5 6h14v2H5V6zm0 12h14v2H5v-2z"/></svg>
+                                    إضافة
                                   </Button>
                                 </div>
                               </div>
                             </details>
                           </TableCell>
-                          <TableCell className="space-x-2">
-                            <Button size="sm" onClick={()=>updateQuestion(q)} className="h-9 px-3 inline-flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M17 3H7a2 2 0 00-2 2v14ل5-3 5 3V5a2 2 0 00-2-2z"/></svg>
-                              <span>حفظ</span>
-                            </Button>
-                            <Button size="sm" variant="destructive" onClick={()=>deleteQuestion(q)} className="h-9 px-3 inline-flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
-                              <span>حذف</span>
-                            </Button>
+                          <TableCell>
+                            <div className="flex flex-col gap-2">
+                              <Button size="sm" onClick={()=>updateQuestion(q)} className="w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
+                                حفظ
+                              </Button>
+                              <Button size="sm" variant="destructive" onClick={()=>deleteQuestion(q)} className="w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                                حذف
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
