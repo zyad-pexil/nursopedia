@@ -27,7 +27,7 @@ export default function Home(){
               <h1 className="text-3xl md:text-5xl xl:text-6xl font-extrabold leading-tight drop-shadow-sm">
                 مرحباً بك في منصة Team Nursopedia
               </h1>
-              <p className="mt-4 text-gray-100/90 text-base md:text-lg max-w-2xl mx-auto lg:mx-0">
+              <p className="mt-4 text-white text-base md:text-lg max-w-2xl mx-auto lg:mx-0 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                 تعلّم، تدرب، وتابع تقدمك مع دروس وامتحانات تفاعلية، ودعم مستمر من نخبة المتخصصين.
               </p>
 

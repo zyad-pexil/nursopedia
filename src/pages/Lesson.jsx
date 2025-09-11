@@ -345,6 +345,29 @@ export default function LessonPage() {
                         >{isFullscreen ? 'تصغير الفيديو' : 'تكبير الفيديو'}</Button>
                       </div>
                     </div>
+
+                    {/* زر تكبير دائم في أسفل يمين الفيديو لضمان ظهوره على الشاشات الصغيرة */}
+                    <button
+                      type="button"
+                      aria-label={isFullscreen ? 'تصغير الفيديو' : 'تكبير الفيديو'}
+                      className="pointer-events-auto absolute bottom-3 right-3 z-30 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/95 text-gray-900 shadow-lg ring-1 ring-black/10 md:hidden"
+                      onClick={() => {
+                        const container = wrapperRef.current
+                        if (!container) return
+                        if (!document.fullscreenElement) {
+                          if (container.requestFullscreen) container.requestFullscreen()
+                        } else {
+                          if (document.exitFullscreen) document.exitFullscreen()
+                        }
+                      }}
+                    >
+                      {/* icon */}
+                      {isFullscreen ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M14 10h6V4h-2v4h-4v2zM4 10h6V8H6V4H4v6zm10 4v2h4v4h2v-6h-6zM4 14v6h2v-4h4v-2H4z"/></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M14 4h6v6h-2V6h-4V4zM4 4h6v2H6v4H4V4zm16 16h-6v-2h4v-4h2v6zM10 20H4v-6h2v4h4v2z"/></svg>
+                      )}
+                    </button>
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 text-center">اضغط على تشغيل لبدء الفيديو. عناصر التحكم تظهر تلقائيًا مع الحركة.</p>
