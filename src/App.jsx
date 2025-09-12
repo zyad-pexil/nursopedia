@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Eye, EyeOff, User, Lock, GraduationCap, Upload, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import logoImage from './assets/LOGO.png'
 import ApiService from './services/api.js'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import './App.css'
 import Slideshow from '@/components/Slideshow.jsx'
 
@@ -112,14 +112,12 @@ function LoginFormView({ message, loading, showPassword, setShowPassword, loginD
           </div>
           <div className="text-center">
             <span className="text-gray-600 text-sm">ليس لديك حساب؟ </span>
-            <button
-              onClick={() => navigate('/register')}
+            <Link
+              to="/register"
               className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-              disabled={loading}
-              type="button"
             >
               إنشاء حساب جديد
-            </button>
+            </Link>
           </div>
         </div>
       </CardContent>
@@ -352,13 +350,12 @@ function RegisterFormView({ message, loading, registerData, handleInputChange, h
           </Button>
         </form>
           <div className="mt-6 text-center">
-            <button
-              onClick={() => navigate('/login')}
+            <Link
+              to="/login"
               className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-              disabled={loading}
             >
               العودة لتسجيل الدخول
-            </button>
+            </Link>
           </div>
       </CardContent>
     </Card>
@@ -403,9 +400,9 @@ function ForgotPasswordView({ message, loading, setCurrentView }){
           </Button>
         </form>
         <div className="mt-6 text-center">
-          <button onClick={() => navigate('/login')} className="text-primary hover:text-primary/80 text-sm transition-colors" disabled={loading}>
+          <Link to="/login" className="text-primary hover:text-primary/80 text-sm transition-colors">
             العودة لتسجيل الدخول
-          </button>
+          </Link>
         </div>
       </CardContent>
     </Card>
@@ -1040,7 +1037,9 @@ function App({ initialView = 'login' }) {
             <p className="text-sm text-gray-600">يمكنك الآن العودة لتسجيل الدخول أو الذهاب للصفحة الرئيسية.</p>
           </div>
           <DialogFooter>
-            <Button onClick={() => { setShowSuccessModal(false); navigate('/login'); }} className="w-full sm:w-auto">الانتقال لتسجيل الدخول</Button>
+            <Link to="/login" onClick={() => setShowSuccessModal(false)} className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto">الانتقال لتسجيل الدخول</Button>
+            </Link>
           </DialogFooter>
         </DialogContent>
       </Dialog>
