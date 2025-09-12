@@ -319,7 +319,7 @@ export default function AdminManage(){
                         <TableCell className="space-x-2 space-y-1">
                           {r.status === 'pending' ? (
                             <>
-                              <Button size="sm" variant="outline" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
+                              <Button size="sm" variant="default" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
                                 setProcessing(p=>({...p,[`add_${r.id}`]:true}))
                                 try{
                                   await Api.approveAdditionalSubjectRequest(r.id)
@@ -331,7 +331,7 @@ export default function AdminManage(){
                                   setProcessing(p=>({...p,[`add_${r.id}`]:false}))
                                 }
                               }}>قبول</Button>
-                              <Button size="sm" variant="outline" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
+                              <Button size="sm" variant="destructive" disabled={!!processing[`add_${r.id}`]} onClick={async ()=>{
                                 setProcessing(p=>({...p,[`add_${r.id}`]:true}))
                                 try{
                                   await Api.rejectAdditionalSubjectRequest(r.id)
