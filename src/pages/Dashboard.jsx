@@ -4,24 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Progress } from '@/components/ui/progress.jsx'
 import Api from '../services/api.js'
 import { Link } from 'react-router-dom'
-import logo from '../assets/LOGO.png'
+import logo from '../assets/LOGO.webp'
 import { Button } from '@/components/ui/button.jsx'
 import { BookOpen, TrendingUp, Layers, Search, ArrowRightCircle } from 'lucide-react'
 
 // Manual image paths for specific subjects
-const IMG_ASASIAT_TAMREED_AMALI = new URL('../assets/اساسيات تمريض عملي.jpg', import.meta.url).href
-const IMG_ASASIAT_TAMREED_NAZARI = new URL('../assets/اساسيات تمريض نظري.png', import.meta.url).href
-const IMG_TASHREEH = new URL('../assets/تشريح.png', import.meta.url).href
-const IMG_MIKRO_BIOLOGY = new URL('../assets/ميكرو بيولوجي.jpg', import.meta.url).href
-const IMG_WAZAEF_ALAADA = new URL('../assets/وضائف الاعظاء.jpg', import.meta.url).href
-const IMG_KIMYA_HAYAWIA = new URL('../assets/كيمياء حيويه.jpg', import.meta.url).href
-const IMG_NESA_W_TAWLEED_AMALI = new URL('../assets/النساء والتوليد عملي.jpg', import.meta.url).href
-const IMG_NESA_W_TAWLEED_NAZARI = new URL('../assets/النساء والتوليد نظري.jpg', import.meta.url).href
-const IMG_TIB_ALNISA_W_TAWLEED = new URL('../assets/طب النساء والتوليد.jpg', import.meta.url).href
-const IMG_JARAHA_ATFAL = new URL('../assets/جراحه اطفال.jpg', import.meta.url).href
-const IMG_TAMREED_ATFAL_AMALI = new URL('../assets/تمريض اطفال عملي.jpg', import.meta.url).href
-const IMG_TAMREED_ATFAL_NAZARI = new URL('../assets/تمريض اطفال نظري.jpg', import.meta.url).href
-const IMG_TIB_ATFAL = new URL('../assets/طب اطفال.jpg', import.meta.url).href
+const IMG_ASASIAT_TAMREED_AMALI = new URL('../assets/اساسيات تمريض عملي.webp', import.meta.url).href
+const IMG_ASASIAT_TAMREED_NAZARI = new URL('../assets/اساسيات تمريض نظري.webp', import.meta.url).href
+const IMG_TASHREEH = new URL('../assets/تشريح.webp', import.meta.url).href
+const IMG_MIKRO_BIOLOGY = new URL('../assets/ميكرو بيولوجي.webp', import.meta.url).href
+const IMG_WAZAEF_ALAADA = new URL('../assets/وضائف الاعظاء.webp', import.meta.url).href
+const IMG_KIMYA_HAYAWIA = new URL('../assets/كيمياء حيويه.webp', import.meta.url).href
+const IMG_NESA_W_TAWLEED_AMALI = new URL('../assets/النساء والتوليد عملي.webp', import.meta.url).href
+const IMG_NESA_W_TAWLEED_NAZARI = new URL('../assets/النساء والتوليد نظري.webp', import.meta.url).href
+const IMG_TIB_ALNISA_W_TAWLEED = new URL('../assets/طب النساء والتوليد.webp', import.meta.url).href
+const IMG_JARAHA_ATFAL = new URL('../assets/جراحه اطفال.webp', import.meta.url).href
+const IMG_TAMREED_ATFAL_AMALI = new URL('../assets/تمريض اطفال عملي.webp', import.meta.url).href
+const IMG_TAMREED_ATFAL_NAZARI = new URL('../assets/تمريض اطفال نظري.webp', import.meta.url).href
+const IMG_TIB_ATFAL = new URL('../assets/طب اطفال.webp', import.meta.url).href
 
 // Use direct image path provided by API/data. No name matching.
 function getSubjectImage(subject){

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import logo from '@/assets/LOGO.png'
+import logo from '@/assets/LOGO.webp'
 import { BookOpen, BadgeCheck, Timer, Shield, Star, ArrowRight, Sparkles } from 'lucide-react'
 import BackgroundSlideshow from '@/components/BackgroundSlideshow.jsx'
 
