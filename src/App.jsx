@@ -113,7 +113,7 @@ function LoginFormView({ message, loading, showPassword, setShowPassword, loginD
           <div className="text-center">
             <span className="text-gray-600 text-sm">ليس لديك حساب؟ </span>
             <button
-              onClick={() => setCurrentView('register')}
+              onClick={() => navigate('/register')}
               className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
               disabled={loading}
             >
@@ -350,15 +350,15 @@ function RegisterFormView({ message, loading, registerData, handleInputChange, h
             )}
           </Button>
         </form>
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => setCurrentView('login')}
-            className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-            disabled={loading}
-          >
-            العودة لتسجيل الدخول
-          </button>
-        </div>
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
+              disabled={loading}
+            >
+              العودة لتسجيل الدخول
+            </button>
+          </div>
       </CardContent>
     </Card>
   )
@@ -402,7 +402,7 @@ function ForgotPasswordView({ message, loading, setCurrentView }){
           </Button>
         </form>
         <div className="mt-6 text-center">
-          <button onClick={() => setCurrentView('login')} className="text-primary hover:text-primary/80 text-sm transition-colors" disabled={loading}>
+          <button onClick={() => navigate('/login')} className="text-primary hover:text-primary/80 text-sm transition-colors" disabled={loading}>
             العودة لتسجيل الدخول
           </button>
         </div>
@@ -1038,7 +1038,7 @@ function App({ initialView = 'login' }) {
             <p className="text-sm text-gray-600">يمكنك الآن العودة لتسجيل الدخول أو الذهاب للصفحة الرئيسية.</p>
           </div>
           <DialogFooter>
-            <Button onClick={() => { setShowSuccessModal(false); setCurrentView('login'); }} className="w-full sm:w-auto">الانتقال لتسجيل الدخول</Button>
+            <Button onClick={() => { setShowSuccessModal(false); navigate('/login'); }} className="w-full sm:w-auto">الانتقال لتسجيل الدخول</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
