@@ -17,7 +17,7 @@ import Slideshow from '@/components/Slideshow.jsx'
 
 
 // Hoisted form components to prevent remount on each parent render
-function LoginFormView({ message, loading, showPassword, setShowPassword, loginData, handleInputChange, handleLogin, setCurrentView }){
+function LoginFormView({ message, loading, showPassword, setShowPassword, loginData, handleInputChange, handleLogin, setCurrentView, navigate }){
   return (
     <Card className="w-full max-w-md mx-auto nursopedia-card fade-in nurso-hover-lift">
       <CardHeader className="text-center">
@@ -116,6 +116,7 @@ function LoginFormView({ message, loading, showPassword, setShowPassword, loginD
               onClick={() => navigate('/register')}
               className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
               disabled={loading}
+              type="button"
             >
               إنشاء حساب جديد
             </button>
@@ -993,6 +994,7 @@ function App({ initialView = 'login' }) {
             handleInputChange={handleInputChange}
             handleLogin={handleLogin}
             setCurrentView={setCurrentView}
+            navigate={navigate}
           />
         )}
         {currentView === 'register' && (
