@@ -46,6 +46,7 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<Home />} />
           <Route path="login" element={<PublicOnlyRoute><App initialView="login" /></PublicOnlyRoute>} />
           <Route path="register" element={<PublicOnlyRoute><App initialView="register" /></PublicOnlyRoute>} />
+          <Route path="forgot-password" element={<PublicOnlyRoute><App initialView="forgot-password" /></PublicOnlyRoute>} />
 
           <Route
             path="dashboard"

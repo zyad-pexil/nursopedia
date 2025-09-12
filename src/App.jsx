@@ -102,13 +102,12 @@ function LoginFormView({ message, loading, showPassword, setShowPassword, loginD
         </form>
         <div className="mt-6 space-y-3">
           <div className="text-center">
-            <button
-              onClick={() => setCurrentView('forgot-password')}
+            <Link
+              to="/forgot-password"
               className="text-primary hover:text-primary/80 text-sm transition-colors"
-              disabled={loading}
             >
               نسيت كلمة المرور؟
-            </button>
+            </Link>
           </div>
           <div className="text-center">
             <span className="text-gray-600 text-sm">ليس لديك حساب؟ </span>
