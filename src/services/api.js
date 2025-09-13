@@ -321,6 +321,9 @@ class ApiService {
   async getExams(lessonId) {
     return this.request(`/admin/lessons/${lessonId}/exams`);
   }
+  async getSubjectLevelExams(subjectId) {
+    return this.request(`/admin/subjects/${subjectId}/exams`);
+  }
   async createExam(payload) {
     return this.request('/admin/exams', { method: 'POST', body: JSON.stringify(payload) });
   }

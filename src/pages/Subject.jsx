@@ -13,6 +13,7 @@ export default function SubjectPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [lessons, setLessons] = useState([])
+  const [exams, setExams] = useState([]) // includes both lesson-level and subject-level
   const [sortBy, setSortBy] = useState('default') // default | incomplete | recent | title
 
   useEffect(() => {
@@ -21,10 +22,16 @@ export default function SubjectPage() {
       setLoading(true)
       setError('')
       try {
-        const res = await Api.getSubjectLessons(id)
-        if (res.success && mounted) setLessons(res.lessons || [])
+        const [resLessons, resExams] = await Promise.all([
+          Api.getSubjectLessons(id),
+          Api.getSubjectExams(id),
+        ])
+        if (mounted) {
+          if (resLessons.success) setLessons(resLessons.lessons || [])
+          if (resExams.success) setExams(resExams.exams || [])
+        }
       } catch (e) {
-        setError(e.message || 'تعذر تحميل الدروس')
+        setError(e.message || 'تعذر تحميل البيانات')
       } finally {
         if (mounted) setLoading(false)
       }
@@ -117,6 +124,25 @@ export default function SubjectPage() {
             <option value="recent">الأحدث متابعة</option>
             <option value="title">حسب العنوان</option>
           </select>
+        </div>
+
+        {/* Subject-level Exams */}
+        <div className="space-y-3">
+          <h2 className="text-lg font-bold">الامتحانات الشاملة للمادة</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {exams.filter(e => e.is_subject_level).map(e => (
+              <div key={e.id} className="p-4 rounded-xl border bg-white dark:bg-gray-900 ring-1 ring-black/5 flex items-center justify-between nurso-hover-lift">
+                <div>
+                  <div className="font-bold">{e.title}</div>
+                  <div className="text-xs text-muted-foreground">المدة: {e.duration_minutes} دقيقة • درجة النجاح: {Math.round(e.passing_score)}%</div>
+                </div>
+                <Button onClick={() => navigate(`/exam/${e.id}`)}>بدء</Button>
+              </div>
+            ))}
+            {exams.filter(e => e.is_subject_level).length === 0 && (
+              <Card className="md:col-span-2"><CardContent className="py-6 text-center text-muted-foreground">لا توجد امتحانات شاملة بعد</CardContent></Card>
+            )}
+          </div>
         </div>
 
         {/* Lessons list */}

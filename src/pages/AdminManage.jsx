@@ -17,8 +17,9 @@ export default function AdminManage(){
   const [sectionOpen, setSectionOpen] = useState(()=>{
     try {
       const saved = localStorage.getItem('adminManage.sectionOpen')
-      return saved ? JSON.parse(saved) : { lessons: true, exams: true, questions: true }
-    } catch (e) { return { lessons: true, exams: true, questions: true } }
+      const defaults = { lessons: true, exams: true, questions: true, subjectExams: true }
+      return saved ? { ...defaults, ...JSON.parse(saved) } : defaults
+    } catch (e) { return { lessons: true, exams: true, questions: true, subjectExams: true } }
   })
 
   useEffect(()=>{
@@ -38,13 +39,14 @@ export default function AdminManage(){
   const [lessons, setLessons] = useState([])
   const [selectedLesson, setSelectedLesson] = useState(null)
   const [exams, setExams] = useState([])
+  const [subjectExams, setSubjectExams] = useState([])
   const [selectedExam, setSelectedExam] = useState(null)
   const [questions, setQuestions] = useState([])
 
   // Forms
   const [subjectForm, setSubjectForm] = useState({ name: '', description: '', academic_year_id: '', price: '' })
   const [lessonForm, setLessonForm] = useState({ subject_id: '', title: '', description: '', video_url: '', lesson_order: 1, is_active: true })
-  const [examForm, setExamForm] = useState({ lesson_id: '', title: '', description: '', duration_minutes: 30, passing_score: 60, show_results_immediately: true, is_active: true })
+  const [examForm, setExamForm] = useState({ subject_id: '', lesson_id: '', title: '', description: '', duration_minutes: 30, passing_score: 60, show_results_immediately: true, is_active: true })
   const [questionForm, setQuestionForm] = useState({ exam_id: '', question_text: '', question_type: 'multiple_choice', order: 1, is_active: true, answers: [] })
   const [answerForm, setAnswerForm] = useState({ question_id: '', answer_text: '', is_correct: false, order: 1, is_active: true })
   const [attachDrafts, setAttachDrafts] = useState({}) // { [lessonId]: { name:'', url:'' } }
@@ -74,6 +76,7 @@ export default function AdminManage(){
           setSelectedSubject(firstId)
           setLessonForm(f => ({ ...f, subject_id: firstId }))
           await loadLessons(firstId)
+          await loadSubjectExams(firstId)
         }
       }
     } catch(e){ setMessage(e.message) }
@@ -82,6 +85,12 @@ export default function AdminManage(){
     try {
       const res = await Api.getLessons(subjId)
       if (res.success) setLessons(res.lessons || [])
+    } catch(e){ setMessage(e.message) }
+  }
+  async function loadSubjectExams(subjId){
+    try {
+      const res = await Api.getSubjectLevelExams(subjId)
+      if (res.success) setSubjectExams(res.exams || [])
     } catch(e){ setMessage(e.message) }
   }
   async function loadExams(lessonId){
@@ -163,9 +172,19 @@ export default function AdminManage(){
   async function createExam(){
     setLoading(true)
     try {
-      const payload = { ...examForm, duration_minutes: Number(examForm.duration_minutes || 30), passing_score: Number(examForm.passing_score || 60), lesson_id: Number(examForm.lesson_id) }
+      const payload = {
+        ...examForm,
+        duration_minutes: Number(examForm.duration_minutes || 30),
+        passing_score: Number(examForm.passing_score || 60),
+        subject_id: examForm.subject_id ? Number(examForm.subject_id) : undefined,
+        lesson_id: examForm.lesson_id ? Number(examForm.lesson_id) : undefined,
+      }
       const res = await Api.createExam(payload)
-      if (res.success && payload.lesson_id){ setExamForm({ lesson_id: payload.lesson_id, title:'', description:'', duration_minutes:30, passing_score:60, show_results_immediately:true, is_active:true }); await loadExams(payload.lesson_id) }
+      if (res.success){
+        // Reset form keeping current context
+        setExamForm({ subject_id: payload.subject_id || '', lesson_id: payload.lesson_id || '', title:'', description:'', duration_minutes:30, passing_score:60, show_results_immediately:true, is_active:true })
+        if (payload.lesson_id) await loadExams(payload.lesson_id)
+      }
     } finally { setLoading(false) }
   }
 
@@ -474,7 +493,7 @@ export default function AdminManage(){
               </div>
               <div className="flex flex-wrap gap-2">
                 {subjects.map(s=> (
-                  <Button key={s.id} variant={selectedSubject===s.id? 'default':'secondary'} onClick={async ()=>{ setSelectedSubject(s.id); setLessonForm(f=>({...f, subject_id:s.id})); await loadLessons(s.id) }}>{s.name}</Button>
+                  <Button key={s.id} variant={selectedSubject===s.id? 'default':'secondary'} onClick={async ()=>{ setSelectedSubject(s.id); setLessonForm(f=>({...f, subject_id:s.id})); await loadLessons(s.id); await loadSubjectExams(s.id) }}>{s.name}</Button>
                 ))}
               </div>
             </CardContent>
@@ -582,13 +601,89 @@ export default function AdminManage(){
                               حفظ
                             </Button>
                             <Button size="sm" variant="destructive" onClick={()=>deleteLesson(l)} className="w-full">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 و-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
                               حذف
                             </Button>
                           </div>
                         </TableCell>
                       </TableRow>
                     ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {selectedSubjectObj && (
+            <Card className="nurso-hover-lift border-0 ring-1 ring-black/5 dark:ring-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-emerald-600"><path d="M7 4h10v2H7V4zm-2 4h14v2H5V8zm2 4h10v2H7v-2zm-2 4h14v2H5v-2z"/></svg>
+                    <span>الامتحانات الشاملة للمادة - {selectedSubjectObj.name}</span>
+                  </CardTitle>
+                  <Button variant="outline" size="sm" onClick={() => setSectionOpen(s => ({ ...s, subjectExams: !s.subjectExams }))} className="h-8 px-3 inline-flex items-center gap-2">
+                    <svg className={`h-4 w-4 transition-transform ${sectionOpen.subjectExams ? 'rotate-90' : ''}`} viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+                    <span>{sectionOpen.subjectExams ? 'إخفاء' : 'إظهار'}</span>
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className={`space-y-4 ${sectionOpen.subjectExams ? '' : 'hidden'}`}>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                  <Input placeholder="عنوان" value={examForm.title} onChange={e=>setExamForm({...examForm,title:e.target.value})} />
+                  <Input placeholder="وصف" value={examForm.description} onChange={e=>setExamForm({...examForm,description:e.target.value})} />
+                  <Input placeholder="المدة (د)" value={examForm.duration_minutes} onChange={e=>setExamForm({...examForm,duration_minutes:e.target.value})} />
+                  <Input placeholder="درجة النجاح" value={examForm.passing_score} onChange={e=>setExamForm({...examForm,passing_score:e.target.value})} />
+                  <Button onClick={async ()=>{ setExamForm(f=>({...f, subject_id: selectedSubjectObj.id, lesson_id: '' })); await createExam(); await loadSubjectExams(selectedSubjectObj.id) }} disabled={loading || !selectedSubjectObj?.id} className="h-10 px-4 inline-flex items-center gap-2">
+                    {loading && <span className="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M19 13H5v-2h14v2zM5 6h14v2H5V6zm0 12h14v2H5v-2z"/></svg>
+                    <span>إضافة امتحان شامل</span>
+                  </Button>
+                </div>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-16">#</TableHead>
+                        <TableHead className="min-w-40">العنوان</TableHead>
+                        <TableHead className="w-24">المدة (دقيقة)</TableHead>
+                        <TableHead className="w-24">درجة النجاح</TableHead>
+                        <TableHead className="w-20">أسئلة</TableHead>
+                        <TableHead className="w-16">نشط</TableHead>
+                        <TableHead className="min-w-32">عرض الأسئلة</TableHead>
+                        <TableHead className="min-w-40">إجراءات</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {subjectExams.map((e, index) => (
+                        <TableRow key={e.id} className="hover:bg-muted/40">
+                          <TableCell className="font-medium">{index + 1}</TableCell>
+                          <TableCell><Input value={e.title} onChange={ev=>setSubjectExams(prev=>prev.map(x=>x.id===e.id?{...x,title:ev.target.value}:x))} className="w-full" /></TableCell>
+                          <TableCell><Input value={e.duration_minutes} onChange={ev=>setSubjectExams(prev=>prev.map(x=>x.id===e.id?{...x,duration_minutes:ev.target.value}:x))} className="w-full" /></TableCell>
+                          <TableCell><Input value={e.passing_score} onChange={ev=>setSubjectExams(prev=>prev.map(x=>x.id===e.id?{...x,passing_score:ev.target.value}:x))} className="w-full" /></TableCell>
+                          <TableCell className="text-center font-medium">{e.questions_count ?? (e.questions?.length || 0)}</TableCell>
+                          <TableCell className="text-center"><input type="checkbox" className="h-4 w-4 accent-emerald-600" checked={e.is_active} onChange={ev=>setSubjectExams(prev=>prev.map(x=>x.id===e.id?{...x,is_active:ev.target.checked}:x))} /></TableCell>
+                          <TableCell>
+                            <Button size="sm" onClick={async ()=>{ setSelectedExam(e.id); setQuestionForm(f=>({...f, exam_id:e.id})); await loadQuestions(e.id) }} className="w-full">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M5 4h14v2H5V4zm0 14h14v2H5v-2zM5 9h10v6H5V9zm12 0h4v6h-4V9z"/></svg>
+                              عرض الأسئلة
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-2">
+                              <Button size="sm" onClick={async ()=>{ await updateExam(e); await loadSubjectExams(selectedSubjectObj.id) }} className="w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M17 3H7a2 2 0 00-2 2v14l5-3 5 3V5a2 2 0 00-2-2z"/></svg>
+                                حفظ
+                              </Button>
+                              <Button size="sm" variant="destructive" onClick={async ()=>{ await deleteExam(e); await loadSubjectExams(selectedSubjectObj.id) }} className="w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 mr-1"><path d="M6 7h12v2H6V7zm1 3h10v10H7V10zm3-7h4v2h-4V3z"/></svg>
+                                حذف
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </div>
