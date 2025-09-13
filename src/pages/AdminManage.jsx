@@ -235,11 +235,23 @@ export default function AdminManage(){
 
   // Question/Answer actions
   async function createQuestion(){
+    if (!questionForm.exam_id) { toast.error('يرجى اختيار امتحان أولاً'); return; }
+    if (!questionForm.question_text || !String(questionForm.question_text).trim()) { toast.error('نص السؤال مطلوب'); return; }
     setLoading(true)
+    setMessage('')
     try {
       const payload = { ...questionForm, order: Number(questionForm.order || 1), exam_id: Number(questionForm.exam_id) }
       const res = await Api.createQuestion(payload)
-      if (res.success && payload.exam_id){ setQuestionForm({ exam_id: payload.exam_id, question_text:'', question_type:'multiple_choice', order:1, is_active:true, answers: [] }); await loadQuestions(payload.exam_id) }
+      if (res?.success && payload.exam_id){
+        setQuestionForm({ exam_id: payload.exam_id, question_text:'', question_type:'multiple_choice', order:1, is_active:true, answers: [] })
+        await loadQuestions(payload.exam_id)
+        toast.success('تم إضافة السؤال')
+      } else {
+        toast.error(res?.message || 'فشل إضافة السؤال')
+      }
+    } catch (e) {
+      setMessage(e.message || 'فشل إضافة السؤال')
+      toast.error(e?.message || 'فشل إضافة السؤال')
     } finally { setLoading(false) }
   }
   async function updateQuestion(q){
