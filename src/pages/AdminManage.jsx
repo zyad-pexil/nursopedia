@@ -169,21 +169,28 @@ export default function AdminManage(){
   }
 
   // Exam actions
-  async function createExam(){
+  async function createExam(overrides = {}){
     setLoading(true)
     try {
+      const merged = { ...examForm, ...overrides }
       const payload = {
-        ...examForm,
-        duration_minutes: Number(examForm.duration_minutes || 30),
-        passing_score: Number(examForm.passing_score || 60),
-        subject_id: examForm.subject_id ? Number(examForm.subject_id) : undefined,
-        lesson_id: examForm.lesson_id ? Number(examForm.lesson_id) : undefined,
+        ...merged,
+        duration_minutes: Number(merged.duration_minutes || 30),
+        passing_score: Number(merged.passing_score || 60),
+        subject_id: merged.subject_id ? Number(merged.subject_id) : undefined,
+        lesson_id: merged.lesson_id ? Number(merged.lesson_id) : undefined,
       }
       const res = await Api.createExam(payload)
       if (res.success){
         // Reset form keeping current context
         setExamForm({ subject_id: payload.subject_id || '', lesson_id: payload.lesson_id || '', title:'', description:'', duration_minutes:30, passing_score:60, show_results_immediately:true, is_active:true })
-        if (payload.lesson_id) await loadExams(payload.lesson_id)
+        // Refresh the relevant list based on exam type
+        if (payload.lesson_id) {
+          await loadExams(payload.lesson_id)
+        }
+        if (payload.subject_id && !payload.lesson_id) {
+          await loadSubjectExams(payload.subject_id)
+        }
       }
     } finally { setLoading(false) }
   }
@@ -635,7 +642,7 @@ export default function AdminManage(){
                   <Input placeholder="وصف" value={examForm.description} onChange={e=>setExamForm({...examForm,description:e.target.value})} />
                   <Input placeholder="المدة (د)" value={examForm.duration_minutes} onChange={e=>setExamForm({...examForm,duration_minutes:e.target.value})} />
                   <Input placeholder="درجة النجاح" value={examForm.passing_score} onChange={e=>setExamForm({...examForm,passing_score:e.target.value})} />
-                  <Button onClick={async ()=>{ setExamForm(f=>({...f, subject_id: selectedSubjectObj.id, lesson_id: '' })); await createExam(); await loadSubjectExams(selectedSubjectObj.id) }} disabled={loading || !selectedSubjectObj?.id} className="h-10 px-4 inline-flex items-center gap-2">
+                  <Button onClick={async ()=>{ await createExam({ subject_id: selectedSubjectObj.id, lesson_id: '' }); }} disabled={loading || !selectedSubjectObj?.id} className="h-10 px-4 inline-flex items-center gap-2">
                     {loading && <span className="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />}
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M19 13H5v-2h14v2zM5 6h14v2H5V6zm0 12h14v2H5v-2z"/></svg>
                     <span>إضافة امتحان شامل</span>
