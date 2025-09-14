@@ -444,7 +444,13 @@ export default function AdminManage(){
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell>{r.payment_receipt_url ? <a className="text-primary underline" href={resolveFileUrl(r.payment_receipt_url)} target="_blank" rel="noopener noreferrer">عرض</a> : '-'}</TableCell>
+                      <TableCell>
+                        {r.payment_receipt_url ? (
+                          <a href={resolveFileUrl(r.payment_receipt_url)} target="_blank" rel="noopener noreferrer">
+                            <Button size="sm" variant="outline">عرض الإيصال</Button>
+                          </a>
+                        ) : '—'}
+                      </TableCell>
                       <TableCell>
                         {Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(Number(r.total_amount||0))}
                       </TableCell>
