@@ -346,7 +346,11 @@ export default function AdminManage(){
                         <TableCell>{r?.student?.name} <span className="text-xs text-gray-500">@{r?.student?.username}</span></TableCell>
                         <TableCell>{r?.subject?.name || '-'}</TableCell>
                         <TableCell>
-                          {r.receipt_url ? (<a href={r.receipt_url} target="_blank" rel="noreferrer" className="text-emerald-700 hover:underline">عرض الإيصال</a>) : '—'}
+                          {r.receipt_url ? (
+                            <a href={resolveFileUrl(r.receipt_url)} target="_blank" rel="noopener noreferrer">
+                              <Button size="sm" variant="outline">عرض الإيصال</Button>
+                            </a>
+                          ) : '—'}
                         </TableCell>
                         <TableCell>
                           {Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(Number(r?.subject?.price || 0))}
