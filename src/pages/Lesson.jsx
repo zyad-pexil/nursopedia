@@ -291,7 +291,7 @@ export default function LessonPage() {
                     <div className={`pointer-events-auto p-3 bg-gradient-to-t from-black/60 to-transparent text-white select-none transition-opacity duration-300 ${controlsVisible ? 'opacity-100' : 'opacity-0'}`}>
                       <div className="flex items-center gap-3">
                         {/* تشغيل/إيقاف */}
-                        <Button size="sm" variant="secondary" className="bg-white/90 text-gray-900 hover:bg-white shadow-sm"
+                        <Button size="sm" variant="secondary" aria-label={isPlaying ? 'إيقاف' : 'تشغيل'} className="hidden md:inline-flex bg-white/90 text-gray-900 hover:bg-white shadow-sm"
                           onClick={() => {
                             if (playerRef.current) {
                               isPlaying ? playerRef.current.pauseVideo() : playerRef.current.playVideo()
