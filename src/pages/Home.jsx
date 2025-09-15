@@ -16,7 +16,7 @@ export default function Home(){
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="nurso-container pt-16 pb-10 lg:pt-24 lg:pb-16">
+        <section className="nurso-container pt-16 pb-10 lg:pt-24 lg:pb-16 px-4 sm:px-6 md:px-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 text-center lg:text-right">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/30 supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:backdrop-blur border border-white/20 mb-4">
@@ -58,7 +58,7 @@ export default function Home(){
 
         {/* Features Section */}
         <SectionShell translucent>
-          <div className="nurso-container py-12">
+          <div className="nurso-container py-12 px-4 sm:px-6 md:px-0">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">مميزات المنصة</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 nurso-stagger [--card-bg:theme(colors.white/15)] [--card-border:theme(colors.white/25)]">
               <Feature icon={<BookOpen className="w-6 h-6 text-primary" />} title="محتوى منظم">
@@ -78,7 +78,7 @@ export default function Home(){
         </SectionShell>
 
         {/* Testimonials Section */}
-        <section className="nurso-container py-14">
+        <section className="nurso-container py-14 px-4 sm:px-6 md:px-0">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 drop-shadow">آراء طلابنا</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 nurso-stagger">
             <Testimonial name="سارة محمد" grade="سنة أولى تمريض">
@@ -95,7 +95,7 @@ export default function Home(){
 
         {/* Stats Section */}
         <SectionShell translucent>
-          <div className="nurso-container py-14">
+          <div className="nurso-container py-14 px-4 sm:px-6 md:px-0">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">المنصة في الأرقام</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center nurso-stagger">
               <Stat number="+5k" label="طالب مسجّل" />
@@ -107,7 +107,7 @@ export default function Home(){
         </SectionShell>
 
         {/* CTA Section */}
-        <section className="nurso-container py-16 text-center">
+        <section className="nurso-container py-16 text-center px-4 sm:px-6 md:px-0">
           <div className="mx-auto max-w-3xl p-8 rounded-2xl bg-primary/90 text-white shadow-xl">
             <h3 className="text-2xl md:text-3xl font-semibold mb-3">ابدأ رحلتك الآن</h3>
             <p className="text-white/90 mb-6">

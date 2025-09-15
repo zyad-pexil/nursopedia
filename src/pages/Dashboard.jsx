@@ -150,7 +150,7 @@ export default function Dashboard() {
   if (error) return <div className="p-6 text-red-600">{error}</div>
 
   return (
-    <div className="nurso-container nurso-section space-y-8">
+    <div className="nurso-container nurso-section space-y-8 px-4 sm:px-6 md:px-0">
       {/* هيدر ترحيبي صغير */}
       <section className="flex flex-col gap-2">
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">مرحبًا بك في لوحتك 👋</h1>

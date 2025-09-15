@@ -25,6 +25,12 @@ html.dark .shadow { box-shadow: 0 1px 2px rgba(0,0,0,.4); }
   padding-left: 1rem;
   padding-right: 1rem;
 }
+@media (max-width: 640px) {
+  .nurso-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
 .nurso-section {
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -103,4 +109,11 @@ html.dark .nurso-success-banner {
   border-color: rgba(52,211,153,0.35);
   color: #d1fae5; /* emerald-100 */
   box-shadow: 0 10px 24px rgba(52,211,153,0.12), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* Mobile touch targets */
+@media (max-width: 640px) {
+  button, .button, [role="button"] {
+    min-height: 44px;
+  }
 }

@@ -86,7 +86,7 @@ export default function SubjectPage() {
           <div className="p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
               <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">{subjectName}</h1>
+                <h1 className="text-2xl sm:text-2.5xl md:text-3xl font-extrabold tracking-tight">{subjectName}</h1>
                 <p className="text-white/90 text-sm mt-1">الدروس المتاحة وتقدمك بالمادة</p>
               </div>
               <div className="flex items-center gap-3">
