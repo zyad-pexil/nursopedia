@@ -313,7 +313,7 @@ export default function LessonPage() {
                         </Button>
 
                         {/* الصوت */}
-                        <div className="flex items-center gap-2">
+                        <div className="hidden md:flex items-center gap-2">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 opacity-80"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
                           <input type="range" min="0" max="100" defaultValue="100" className="w-32 accent-emerald-500" onChange={(e) => playerRef.current && playerRef.current.setVolume(parseInt(e.target.value, 10))} />
                         </div>
