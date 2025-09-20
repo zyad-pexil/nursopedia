@@ -14,7 +14,38 @@ export function resolveFileUrl(path) {
 
 class ApiService {
   constructor() {
-    this.token = localStorage.getItem('authToken');
+    this.token = this.getToken();
+  }
+
+  setToken(token) {
+    this.token = token;
+    if (token) {
+      localStorage.setItem('authToken', token);
+      // خزن نسخة في Cookie غير HttpOnly عشان الوصول من JS (لو عايز)
+      document.cookie = `auth_token_js=${token}; path=/; max-age=${7*24*60*60}; samesite=strict`;
+    } else {
+      localStorage.removeItem('authToken');
+      document.cookie = 'auth_token_js=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+  }
+
+  getToken() {
+    // ابحث أولاً في localStorage
+    let token = this.token || localStorage.getItem('authToken');
+    if (token) return token;
+
+    // لو مش لاقي، ابحث في Cookie (النسخة غير HttpOnly)
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'auth_token_js') {
+        token = value;
+        // خزنه في localStorage عشان المرات الجاية
+        localStorage.setItem('authToken', token);
+        break;
+      }
+    }
+    return token;
   }
 
   // Helper method to make HTTP requests
@@ -25,6 +56,7 @@ class ApiService {
     const baseHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
 
     const config = {
+      credentials: 'include', // include cookies for auth (HttpOnly)
       ...options,
       headers: {
         ...baseHeaders,
@@ -89,8 +121,7 @@ class ApiService {
     });
 
     if (response.success) {
-      this.token = response.token;
-      localStorage.setItem('authToken', response.token);
+      this.setToken(response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
     }
 
@@ -370,15 +401,14 @@ class ApiService {
 
   async logout() {
     try {
-      // Call backend to invalidate current session id
+      // Call backend to invalidate current session id and clear cookie
       await this.request('/auth/logout', { method: 'POST' });
       toast.success('✅ تم تسجيل الخروج بنجاح')
     } catch (e) {
       // Even if server call fails, proceed with local cleanup
       console.warn('Logout API failed or session already invalid:', e?.message || e);
     }
-    this.token = null;
-    localStorage.removeItem('authToken');
+    this.setToken(null);
     localStorage.removeItem('user');
   }
 
