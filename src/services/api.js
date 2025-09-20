@@ -1,9 +1,20 @@
 // API service for communicating with the backend
 import { toast } from 'sonner'
 
-// Normalize base URL to avoid trailing slashes
+// Normalize base URL to avoid extra or trailing slashes
 function normalizeBase(url) {
-  return (url || '').replace(/\/+$/, '');
+  const raw = String(url || '');
+  try {
+    const u = new URL(raw);
+    // Collapse multiple slashes in pathname (but keep single leading slash)
+    const cleanPath = u.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '');
+    return `${u.origin}${cleanPath}`;
+  } catch {
+    // Fallback: collapse multiple slashes except after protocol
+    return raw
+      .replace(/([^:])\/{2,}/g, '$1/')
+      .replace(/\/+$/, '');
+  }
 }
 function joinUrl(base, endpoint) {
   const b = normalizeBase(base);
