@@ -1,9 +1,20 @@
 // API service for communicating with the backend
 import { toast } from 'sonner'
 
-const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL)
+// Normalize base URL to avoid trailing slashes
+function normalizeBase(url) {
+  return (url || '').replace(/\/+$/, '');
+}
+function joinUrl(base, endpoint) {
+  const b = normalizeBase(base);
+  const e = endpoint?.startsWith('/') ? endpoint : `/${endpoint || ''}`;
+  return `${b}${e}`;
+}
+
+const RAW_API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL)
   ? import.meta.env.VITE_API_BASE_URL
   : (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'http://localhost:5000/api');
+const API_BASE_URL = normalizeBase(RAW_API_BASE);
 export const API_ORIGIN = new URL(API_BASE_URL).origin;
 export function resolveFileUrl(path) {
   if (!path) return path;
@@ -50,7 +61,7 @@ class ApiService {
 
   // Helper method to make HTTP requests
   async request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = joinUrl(API_BASE_URL, endpoint);
 
     const isFormData = options && options.body instanceof FormData;
     const baseHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
